@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -14,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ public class Classroom extends AppCompatActivity {
 
         getData();
         btnBack = (ImageView) findViewById(R.id.imageView4);
+        btnAdd = (ImageView) findViewById(R.id.imageAdd);
         recyclerView = (RecyclerView) findViewById(R.id.listClassroom);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -41,6 +44,37 @@ public class Classroom extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(Classroom.this, TeacherHome.class);
                 startActivity(intent);
+            }
+        });
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(Classroom.this);
+                View mView = getLayoutInflater().inflate(R.layout.add_class, null);
+
+                Button btnCancel = (Button) mView.findViewById(R.id.button3);
+                Button btnSave = (Button) mView.findViewById(R.id.button4);
+
+                alert.setView(mView);
+
+                AlertDialog alertDialog = alert.create();
+                alertDialog.setCanceledOnTouchOutside(false);
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialog.dismiss();
+                    }
+                });
+
+                btnSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(Classroom.this, "Save", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                alertDialog.show();
             }
         });
 
