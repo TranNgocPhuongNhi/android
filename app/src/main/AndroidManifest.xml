@@ -10,22 +10,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project">
-        <activity android:name=".StudySituation"></activity>
-        <activity
-            android:name=".Notification"/>
-        <activity
-            android:name=".RollCall" />
-        <activity
-            android:name=".StudentGrade"/>
-        <activity
-            android:name=".ListStudent"/>
-        <activity
-            android:name=".Classroom"/>
-        <activity android:name=".StudentHome"/>
-        <activity
-            android:name=".TeacherHome"/>
-        <activity
-            android:name=".Login">
+        <activity android:name=".Register"></activity>
+        <activity android:name=".StudySituation" />
+        <activity android:name=".Notification" />
+        <activity android:name=".RollCall" />
+        <activity android:name=".StudentGrade" />
+        <activity android:name=".ListStudent" />
+        <activity android:name=".Classroom" />
+        <activity android:name=".StudentHome" />
+        <activity android:name=".TeacherHome" />
+        <activity android:name=".Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
