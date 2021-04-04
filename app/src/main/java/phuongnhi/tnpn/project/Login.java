@@ -106,8 +106,15 @@ public class Login extends AppCompatActivity {
                             if(status) {
                                 JSONArray data = jsonObject.getJSONArray("data");
                                 if(data.length() > 0) {
-                                    Intent intent = new Intent(Login.this, StudentHome.class);
-                                    startActivity(intent);
+                                    for(int i=0; i<data.length(); i++) {
+                                        JSONObject object = data.getJSONObject(i);
+                                        String name = object.getString("tenSV").trim();
+
+                                        Intent intent = new Intent(Login.this, StudentHome.class);
+                                        intent.putExtra("tenSV", name);
+                                        startActivity(intent);
+                                    }
+
                                 }
                                 else {
                                     message = "Không tìm thấy tài khoản, xin hãy nhập chính xác tài khoản";
@@ -157,8 +164,14 @@ public class Login extends AppCompatActivity {
                             if(status) {
                                 JSONArray data = jsonObject.getJSONArray("data");
                                 if(data.length() > 0) {
-                                    Intent intent = new Intent(Login.this, TeacherHome.class);
-                                    startActivity(intent);
+                                    for(int i=0; i<data.length(); i++) {
+                                        JSONObject object = data.getJSONObject(i);
+                                        String name = object.getString("tenGV").trim();
+
+                                        Intent intent = new Intent(Login.this, TeacherHome.class);
+                                        intent.putExtra("tenGV", name);
+                                        startActivity(intent);
+                                    }
                                 }
                                 else {
                                     message = "Không tìm thấy tài khoản, xin hãy nhập chính xác tài khoản";

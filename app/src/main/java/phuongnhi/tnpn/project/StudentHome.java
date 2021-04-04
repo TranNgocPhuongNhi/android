@@ -11,12 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class StudentHome extends AppCompatActivity {
 
     CardView notification, statusLearn;
     ImageView optionsMenu;
+    TextView nameofStudent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,11 @@ public class StudentHome extends AppCompatActivity {
         optionsMenu = (ImageView) findViewById(R.id.optionsMenu);
         notification = (CardView) findViewById(R.id.notification);
         statusLearn = (CardView) findViewById(R.id.statusLearn);
+        nameofStudent = (TextView) findViewById(R.id.nameofStudent);
+
+        Intent intent = getIntent();
+        String tenSV = intent.getStringExtra("tenSV");
+        nameofStudent.setText(tenSV);
 
         notification.setOnClickListener(new View.OnClickListener() {
             @Override
