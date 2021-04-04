@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginLeft="35dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/registerTitle"
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="250dp">
+        android:layout_marginTop="20dp">
 
         <TextView
             android:id="@+id/register"
@@ -48,33 +48,117 @@
             android:gravity="center"
             android:textStyle="bold"
             android:textSize="30sp"
-            android:textColor="@color/white"/>
+            android:textColor="@color/blue_dark"
+            android:layout_marginBottom="10dp"/>
 
-        <EditText
-            android:id="@+id/accountRegister"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="Tài khoản"
-            android:textColor="@color/white"
-            android:textColorHint="#E6E6E6"
-            android:backgroundTint="@color/white"
-            android:layout_gravity="center"
-            android:padding="15dp"/>
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
 
-        <EditText
-            android:id="@+id/passwordRegister"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tên"
+                android:inputType="textPersonName"
+                android:textColor="@color/blue_dark"
+                android:textColorHint="#E6E6E6"
+                android:backgroundTint="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPassword"
-            android:hint="Mật khẩu"
-            android:textColor="@color/white"
-            android:textColorHint="#E6E6E6"
-            android:backgroundTint="@color/white"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/accountRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tài khoản"
+                android:inputType="textPersonName"
+                android:textColor="@color/blue_dark"
+                android:textColorHint="#E6E6E6"
+                android:backgroundTint="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="350dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:padding="15dp" />
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mật khẩu"
+                android:inputType="textPassword"
+                android:textColor="@color/blue_dark"
+                android:textColorHint="#E6E6E6"
+                android:backgroundTint="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="350dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/rePasswordRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nhập lại mật khẩu"
+                android:inputType="textPassword"
+                android:textColor="@color/blue_dark"
+                android:textColorHint="#E6E6E6"
+                android:backgroundTint="@color/white" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/textView17"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bạn muốn đăng ký với tư cách"
+            android:textSize="16sp"
+            android:textColor="@color/blue_light"
+            android:gravity="center"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <RadioButton
+                    android:id="@+id/registerStudent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Học viên"
+                    android:textColor="@color/blue_dark"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/registerTeacher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Giảng viên"
+                    android:textColor="@color/blue_dark"
+                    android:textSize="16sp" />
+            </RadioGroup>
+
+        </LinearLayout>
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnRegister"
@@ -82,7 +166,7 @@
             android:layout_height="match_parent"
             android:text="Đăng ký"
             android:textSize="20sp"
-            android:textColor="@color/white"
+            android:textColor="@color/blue_dark"
             android:background="@drawable/custom_button"
             android:layout_gravity="center"
             android:textAllCaps="false"
