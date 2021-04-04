@@ -11,13 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TeacherHome extends AppCompatActivity {
 
     CardView classroom;
-    CardView others;
     ImageView optionMenu;
+    TextView nameofTeacher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +26,13 @@ public class TeacherHome extends AppCompatActivity {
         setContentView(R.layout.activity_teacher_home);
 
         optionMenu = (ImageView) findViewById(R.id.optionMenu);
-        others = (CardView) findViewById(R.id.others);
         classroom = (CardView) findViewById(R.id.classroom);
+        nameofTeacher = (TextView) findViewById(R.id.nameofTeacher);
+
+        Intent intent = getIntent();
+        String tenGV = intent.getStringExtra("tenGV");
+        nameofTeacher.setText(tenGV);
+
         classroom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,12 +90,6 @@ public class TeacherHome extends AppCompatActivity {
             }
         });
 
-        others.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TeacherHome.this, StudentHome.class);
-                startActivity(intent);
-            }
-        });
     }
+
 }
