@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "663462514657",
+    "project_id": "quanlysinhvien-b692f",
+    "storage_bucket": "quanlysinhvien-b692f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663462514657:android:ca796fbc41423d7f704ca0",
+        "android_client_info": {
+          "package_name": "phuongnhi.tnpn.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "663462514657-lbvjgll521cfheemphm4br9o97k4sd5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNCTuKg5L6ETufq9OWJDGgt2sbU0y2ZTw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "663462514657-lbvjgll521cfheemphm4br9o97k4sd5m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
