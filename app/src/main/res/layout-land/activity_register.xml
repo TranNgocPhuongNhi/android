@@ -59,7 +59,7 @@
                 android:id="@+id/nameRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tên"
+                android:hint="Họ tên"
                 android:inputType="textPersonName"
                 android:textColor="@color/blue_dark"
                 android:textColorHint="#E6E6E6"
@@ -75,8 +75,8 @@
                 android:id="@+id/accountRegister"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tài khoản"
-                android:inputType="textPersonName"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
                 android:textColor="@color/blue_dark"
                 android:textColorHint="#E6E6E6"
                 android:backgroundTint="@color/white" />
@@ -142,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Học viên"
+                    android:text="Sinh viên"
                     android:textColor="@color/blue_dark"
                     android:textSize="16sp" />
 

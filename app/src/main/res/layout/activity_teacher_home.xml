@@ -35,11 +35,11 @@
         <androidx.cardview.widget.CardView
             android:layout_width="80dp"
             android:layout_height="80dp"
-            app:cardCornerRadius="100dp"
+            app:cardCornerRadius="40dp"
             android:layout_gravity="center">
 
             <ImageView
-                android:id="@+id/imgPerson"
+                android:id="@+id/imgPersonTeacher"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/no_face"/>

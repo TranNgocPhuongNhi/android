@@ -56,11 +56,11 @@
             android:layout_gravity="center">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/username"
+                android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tài khoản"
-                android:inputType="textPersonName"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
                 android:textColor="@color/blue_dark"
                 android:textColorHint="#E6E6E6"
                 android:backgroundTint="@color/white" />
@@ -93,47 +93,6 @@
             android:textColor="@color/blue_dark"
             android:layout_marginLeft="70dp"
             android:paddingLeft="5dp"/>
-
-        <TextView
-            android:id="@+id/textView17"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Bạn muốn đăng nhập với tư cách"
-            android:textSize="16sp"
-            android:textColor="@color/blue_light"
-            android:gravity="center" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
-
-            <RadioGroup
-                android:id="@+id/radioGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
-
-                <RadioButton
-                    android:id="@+id/loginStudent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Học viên"
-                    android:textColor="@color/blue_dark"
-                    android:textSize="16sp" />
-
-                <RadioButton
-                    android:id="@+id/loginTeacher"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Giảng viên"
-                    android:textColor="@color/blue_dark"
-                    android:textSize="16sp" />
-            </RadioGroup>
-
-        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnLogin"
