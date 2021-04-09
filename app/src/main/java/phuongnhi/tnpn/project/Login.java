@@ -1,11 +1,13 @@
 package phuongnhi.tnpn.project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +21,16 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,11 +42,16 @@ import java.util.Map;
 public class Login extends AppCompatActivity {
 
     Button btnLogin;
-    EditText username, password;
+    EditText email, password;
     CheckBox remember;
-    RadioButton student, teacher;
     TextView register;
     SharedPreferences sharedPreferences;
+
+    String getEmail, getPassword;
+    FirebaseAuth mAuth;
+    DatabaseReference reference;
+    FirebaseUser user;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,35 +59,42 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         AnhXa();
+
+        mAuth = FirebaseAuth.getInstance();
+
         // Khởi tạo để lưu dữ liệu
         sharedPreferences = getSharedPreferences("dataLogin",MODE_PRIVATE);  // Lưu trữ tạm thời
         // Lấy giá trị sharedPreferences
-        username.setText(sharedPreferences.getString("taikhoan",""));
+        email.setText(sharedPreferences.getString("taikhoan",""));
         password.setText(sharedPreferences.getString("matkau",""));
         remember.setChecked(sharedPreferences.getBoolean("checked", false));
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String getUsername = username.getText().toString().trim();
-                String getPassword = password.getText().toString().trim();
-                if(getUsername.equals("") || getPassword.equals("")) {
-                    Toast.makeText(Login.this, "Vui lòng điền thông tin", Toast.LENGTH_SHORT).show();
+                getEmail = email.getText().toString();
+                getPassword = password.getText().toString();
+                if(getEmail.isEmpty()) {
+                    email.setError("Vui lòng nhập email");
+                    email.requestFocus();
+                    return;
+                }
+                else if(!Patterns.EMAIL_ADDRESS.matcher(getEmail).matches()) {
+                    email.setError("Không đúng định dạng email");
+                    email.requestFocus();
+                    return;
+                }
+                else if(getPassword.isEmpty()) {
+                    password.setError("Vui lòng nhập mật khẩu");
+                    password.requestFocus();
+                    return;
                 }
                 else {
-                    if(student.isChecked()) {
-                        StudentLogin(getUsername, getPassword);
-                    }
-                    else if (teacher.isChecked()) {
-                        TeacherLogin(getUsername, getPassword);
-                    }
-                    else {
-                        Toast.makeText(Login.this, "Hãy chọn tư cách đăng nhập", Toast.LENGTH_SHORT).show();
-                    }
+                    Login();
                 }
 
                 if(remember.isChecked()) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();  // Chỉnh sửa
-                    editor.putString("taikhoan", getUsername); // lưu tài khoản
+                    editor.putString("taikhoan", getEmail); // lưu tài khoản
                     editor.putString("matkhau", getPassword);   // lưu mật khẩu
                     editor.putBoolean("checked", true);
                     editor.commit(); // Xác nhận giá trị
@@ -94,134 +118,49 @@ public class Login extends AppCompatActivity {
         });
     }
 
-    private void StudentLogin(String username, String password) {
-        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.POST, "http://192.168.56.1:81/quanlysinhvien/studentLogin.php",
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String message = jsonObject.getString("message");
-                            Boolean status = jsonObject.getBoolean("status");
-                            if(status) {
-                                JSONArray data = jsonObject.getJSONArray("data");
-                                if(data.length() > 0) {
-                                    for(int i=0; i<data.length(); i++) {
-                                        JSONObject object = data.getJSONObject(i);
-                                        String name = object.getString("tenSV").trim();
+    private void Login() {
+        mAuth.signInWithEmailAndPassword(getEmail, getPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()) {
+                    user = FirebaseAuth.getInstance().getCurrentUser();
+                    reference = FirebaseDatabase.getInstance().getReference("Users");
+                    userID  = user.getUid();
 
-                                        Intent intent = new Intent(Login.this, StudentHome.class);
-                                        intent.putExtra("tenSV", name);
-                                        startActivity(intent);
-                                    }
-
+                    reference.child(userID).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Users userProfile = snapshot.getValue(Users.class);
+                            if(userProfile != null) {
+                                if(userProfile.authority.equals("Sinh viên")) {
+                                    Intent intent = new Intent(Login.this, StudentHome.class);
+                                    startActivity(intent);
                                 }
-                                else {
-                                    message = "Không tìm thấy tài khoản, xin hãy nhập chính xác tài khoản";
-                                    failHandling(message);
+                                if(userProfile.authority.equals("Giảng viên")) {
+                                    Intent intent = new Intent(Login.this, TeacherHome.class);
+                                    startActivity(intent);
                                 }
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(Login.this, "Error " + e.toString(), Toast.LENGTH_SHORT).show();
                         }
-                    }
-                },
-                new com.android.volley.Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Login.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                JSONObject jsonObj = new JSONObject();
-                try {
-                    jsonObj.put("tkSV", username);
-                    jsonObj.put("mkSV", password);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                params.put("params", jsonObj.toString());
-                return params;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
-    private void TeacherLogin(String username, String password) {
-        StringRequest stringRequest = new StringRequest(com.android.volley.Request.Method.POST, "http://192.168.56.1:81/quanlysinhvien/teacherLogin.php",
-                new com.android.volley.Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String message = jsonObject.getString("message");
-                            Boolean status = jsonObject.getBoolean("status");
-                            if(status) {
-                                JSONArray data = jsonObject.getJSONArray("data");
-                                if(data.length() > 0) {
-                                    for(int i=0; i<data.length(); i++) {
-                                        JSONObject object = data.getJSONObject(i);
-                                        String name = object.getString("tenGV").trim();
-
-                                        Intent intent = new Intent(Login.this, TeacherHome.class);
-                                        intent.putExtra("tenGV", name);
-                                        startActivity(intent);
-                                    }
-                                }
-                                else {
-                                    message = "Không tìm thấy tài khoản, xin hãy nhập chính xác tài khoản";
-                                    failHandling(message);
-                                }
-                            }
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(Login.this, "Error " + e.toString(), Toast.LENGTH_SHORT).show();
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(Login.this, "Error " + error, Toast.LENGTH_SHORT).show();
                         }
-                    }
-                },
-                new com.android.volley.Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(Login.this, "Error " + error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                JSONObject jsonObj = new JSONObject();
-                try {
-                    jsonObj.put("tkGV", username);
-                    jsonObj.put("mkGV", password);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    });
                 }
-                params.put("params", jsonObj.toString());
-                return params;
+                else {
+                    Toast.makeText(Login.this, "Đăng nhập thất bại.", Toast.LENGTH_SHORT).show();
+                }
             }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
-
-    private void failHandling(String message) {
-        Toast.makeText(Login.this, message, Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void AnhXa() {
-        username = (EditText) findViewById(R.id.username);
+        email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
         register = (TextView) findViewById(R.id.dangKy);
         remember = (CheckBox) findViewById(R.id.remember);
         btnLogin = (Button) findViewById(R.id.btnLogin);
-        student = (RadioButton) findViewById(R.id.loginStudent);
-        teacher = (RadioButton) findViewById(R.id.loginTeacher);
+
     }
 }

@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="70dp"
         android:layout_height="70dp"
-        app:cardCornerRadius="50dp"
+        app:cardCornerRadius="40dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp" >
 
@@ -19,35 +19,25 @@
             app:srcCompat="@drawable/no_face" />
     </androidx.cardview.widget.CardView>
 
-    <EditText
-        android:id="@+id/tenNguoiDung"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/changeImageTeacher"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Vương Nhất Bác"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp" />
+        android:text="Đổi ảnh"
+        android:textColor="@color/blue"
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        android:layout_marginTop="5dp"/>
 
     <EditText
-        android:id="@+id/tenTruong"
+        android:id="@+id/tenGV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Vương Nhất Bác"
+        android:hint="Họ tên"
         android:textColor="@color/blue_dark"
         android:paddingLeft="20dp" />
-
-    <EditText
-        android:id="@+id/maGiangVien"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Vương Nhất Bác"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
