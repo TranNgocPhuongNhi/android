@@ -38,7 +38,8 @@ public class Register extends AppCompatActivity {
     RadioButton student, teacher;
 
     private FirebaseAuth mAuth;
-    String getName, getEmail, getPassword, getReenterPassword, getAuthority, getImage;
+    String getID, getName, getEmail, getPassword;
+    String getReenterPassword, getAuthority, getImage, getIdUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +109,12 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Users users = new Users(getName, getEmail, getPassword, getAuthority, getImage);
+                            // Tạo mã User ngẫu nhiên
+                            getIdUser = String.valueOf((int)(Math.random() * 100001) + 1000000);
+                            getID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            Users users = new Users(getID,getName, getEmail, getPassword, getAuthority, getImage, getIdUser);
                             FirebaseDatabase.getInstance().getReference("Users")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())    // Tạo tên con lấy từ User UID trong authentication
                                     .setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

@@ -132,11 +132,11 @@ public class Login extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             Users userProfile = snapshot.getValue(Users.class);
                             if(userProfile != null) {
-                                if(userProfile.authority.equals("Sinh viên")) {
+                                if(userProfile.getAuthority().equals("Sinh viên")) {
                                     Intent intent = new Intent(Login.this, StudentHome.class);
                                     startActivity(intent);
                                 }
-                                if(userProfile.authority.equals("Giảng viên")) {
+                                if(userProfile.getAuthority().equals("Giảng viên")) {
                                     Intent intent = new Intent(Login.this, TeacherHome.class);
                                     startActivity(intent);
                                 }
