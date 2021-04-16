@@ -39,7 +39,7 @@ import java.util.UUID;
 
 public class TeacherHome extends AppCompatActivity {
 
-    CardView classroom;
+    CardView classroom, chatWithStudent;
     ImageView optionMenu, imgView, imgEdit;
     TextView nameofTeacher, btnEditImg;
     DatabaseReference reference;
@@ -68,6 +68,14 @@ public class TeacherHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TeacherHome.this, Classroom.class);
+                startActivity(intent);
+            }
+        });
+
+        chatWithStudent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TeacherHome.this, TeacherChat.class);
                 startActivity(intent);
             }
         });
@@ -102,13 +110,13 @@ public class TeacherHome extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.sua:
                                 AlertDialog.Builder alert = new AlertDialog.Builder(TeacherHome.this);
-                                View mView = getLayoutInflater().inflate(R.layout.edit_info_teacher, null);
+                                View mView = getLayoutInflater().inflate(R.layout.edit_info_user, null);
 
-                                btnEditImg = (TextView) mView.findViewById(R.id.changeImageTeacher);
-                                imgEdit = (ImageView) mView.findViewById(R.id.imageView14);
-                                EditText nameGV = (EditText) mView.findViewById(R.id.tenGV);
-                                Button btnCancel = (Button) mView.findViewById(R.id.thoatSua);
-                                Button btnSave = (Button) mView.findViewById(R.id.luuSua);
+                                btnEditImg = (TextView) mView.findViewById(R.id.changeImage);
+                                imgEdit = (ImageView) mView.findViewById(R.id.imgUser);
+                                EditText nameGV = (EditText) mView.findViewById(R.id.tenUser);
+                                Button btnCancel = (Button) mView.findViewById(R.id.thoatSuaUser);
+                                Button btnSave = (Button) mView.findViewById(R.id.luuSuaUser);
 
                                 alert.setView(mView);
 
@@ -228,6 +236,7 @@ public class TeacherHome extends AppCompatActivity {
     private void AnhXa() {
         optionMenu = (ImageView) findViewById(R.id.optionMenu);
         classroom = (CardView) findViewById(R.id.classroom);
+        chatWithStudent = (CardView) findViewById(R.id.chatWithStudent);
         nameofTeacher = (TextView) findViewById(R.id.nameofTeacher);
         imgView = (ImageView) findViewById(R.id.imgPersonTeacher);
     }

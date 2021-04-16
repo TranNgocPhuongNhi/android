@@ -1,7 +1,6 @@
 package phuongnhi.tnpn.project;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,24 +8,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ListStudent extends AppCompatActivity {
@@ -229,8 +222,8 @@ public class ListStudent extends AppCompatActivity {
         ImageView img;
         public myStudentViewHoler(View itemView) {
             super(itemView);
-            nameStudent = itemView.findViewById(R.id.nameStudent);
-            img = itemView.findViewById(R.id.imageView2);
+            nameStudent = itemView.findViewById(R.id.nameSV);
+            img = itemView.findViewById(R.id.imgSV);
             btnOptions = itemView.findViewById(R.id.textViewOptions);
         }
     }

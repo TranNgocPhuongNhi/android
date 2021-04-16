@@ -21,8 +21,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -40,7 +38,7 @@ import java.util.UUID;
 
 public class StudentHome extends AppCompatActivity {
 
-    CardView notification, statusLearn;
+    CardView notification, statusLearn, chatWithTeacher;
     ImageView optionsMenu, imgView, imgEdit;
     TextView nameofStudent, btnEditImg;
     DatabaseReference reference;
@@ -81,6 +79,14 @@ public class StudentHome extends AppCompatActivity {
             }
         });
 
+        chatWithTeacher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StudentHome.this, StudentChat.class);
+                startActivity(intent);
+            }
+        });
+
         reference.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -112,13 +118,13 @@ public class StudentHome extends AppCompatActivity {
                         switch (item.getItemId()) {
                             case R.id.sua:
                                 AlertDialog.Builder alert = new AlertDialog.Builder(StudentHome.this);
-                                View mView = getLayoutInflater().inflate(R.layout.edit_info_student, null);
+                                View mView = getLayoutInflater().inflate(R.layout.edit_info_user, null);
 
                                 btnEditImg = (TextView) mView.findViewById(R.id.changeImage);
-                                imgEdit = (ImageView) mView.findViewById(R.id.imgSV);
-                                EditText nameSV = (EditText) mView.findViewById(R.id.tenSV);
-                                Button btnCancel = (Button) mView.findViewById(R.id.thoatSuaSV);
-                                Button btnSave = (Button) mView.findViewById(R.id.luuSuaSV);
+                                imgEdit = (ImageView) mView.findViewById(R.id.imgUser);
+                                EditText nameSV = (EditText) mView.findViewById(R.id.tenUser);
+                                Button btnCancel = (Button) mView.findViewById(R.id.thoatSuaUser);
+                                Button btnSave = (Button) mView.findViewById(R.id.luuSuaUser);
 
                                 alert.setView(mView);
 
@@ -239,6 +245,7 @@ public class StudentHome extends AppCompatActivity {
         optionsMenu = (ImageView) findViewById(R.id.optionsMenu);
         notification = (CardView) findViewById(R.id.notification);
         statusLearn = (CardView) findViewById(R.id.statusLearn);
+        chatWithTeacher = (CardView) findViewById(R.id.chatWithTeacher);
         nameofStudent = (TextView) findViewById(R.id.nameofStudent);
         imgView = (ImageView) findViewById(R.id.imgPerson);
     }
