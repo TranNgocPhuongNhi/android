@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,10 +36,11 @@ import java.util.Map;
 public class Classroom extends AppCompatActivity {
 
     DatabaseReference myRef;
+    FirebaseUser user;
     RecyclerView recyclerView;
     ImageView btnBack, btnAdd;
-    Adapter adapter;
-    ArrayList<lop> arrayList = new ArrayList<>();
+    ClassAdapter adapter;
+    ArrayList<Lop> arrayList;
 
 
     @Override
@@ -45,30 +48,33 @@ public class Classroom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classroom);
 
-//        getData();
 
         btnBack = (ImageView) findViewById(R.id.imageView4);
         btnAdd = (ImageView) findViewById(R.id.imageAdd);
 
         recyclerView = findViewById(R.id.listClassroom);
+        arrayList = new ArrayList<>();
+        adapter = new ClassAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(Classroom.this));
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference("Class");
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot ds:snapshot.getChildren()) {
-                    Map map = (Map) ds.getValue();
-                    lop sad = new lop(map.get("classID").toString(),map.get("lessonName").toString(),map.get("count").toString());
-                    arrayList.add(sad);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(Classroom.this));
-                    adapter = new Adapter(arrayList,Classroom.this);
-                    recyclerView.setAdapter(adapter);
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                    Lop lop = dataSnapshot.getValue(Lop.class);
+                    if(user.getUid().equals(lop.getID_user())) {    // Nếu id_user trong class bằng với id đang đăng nhập thì mới lấy
+                        arrayList.add(lop);
+                    }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Toast.makeText(Classroom.this, "" + error, Toast.LENGTH_SHORT).show();
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -103,13 +109,15 @@ public class Classroom extends AppCompatActivity {
                 btnSave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(Classroom.this, "Save", Toast.LENGTH_SHORT).show();
-
                         String codeC = txt3.getText().toString();
-                        myRef.child(codeC).child("ID_user").setValue(1043623);
-                        myRef.child(codeC).child("classID").setValue(txt3.getText().toString());
-                        myRef.child(codeC).child("count").setValue((txt2.getText().toString()));
-                        myRef.child(codeC).child("lessonName").setValue(txt1.getText().toString());
+                        String ID_user = user.getUid();
+                        String classID = txt3.getText().toString();
+                        int count = Integer.parseInt(txt2.getText().toString());
+                        String lessonName = txt1.getText().toString();
+                        // Thêm lớp mới vào
+                        Lop lop = new Lop(ID_user, classID, lessonName, count);
+                        myRef.child(codeC).setValue(lop);
+
                         alertDialog.dismiss();
                     }
                 });
@@ -119,104 +127,37 @@ public class Classroom extends AppCompatActivity {
 
     }
 
-    public class Adapter extends RecyclerView.Adapter<Adapter.MyHolder>{
-
-        ArrayList<lop> list;
-        Context context;
-
-        public Adapter(ArrayList<lop> list, Context context) {
-            this.list = list;
-            this.context = context;
-        }
-
+    private class ClassAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @NonNull
         @Override
-        public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_classroom,parent,false);
-            return new MyHolder(v);
+            return new MyViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MyHolder holder, int position) {
-            holder.objectName.setText(list.get(position).getName());
-            holder.numOfPeople.setText(list.get(position).getSize());
-            holder.classID.setText(list.get(position).getID());
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+            Lop lop = arrayList.get(position);
+            holder.objectName.setText(lop.getLessonName());
+            holder.numOfPeople.setText(Integer.toString(lop.getCount()));
+            holder.classID.setText(lop.getClassID());
         }
 
         @Override
         public int getItemCount() {
-            return list.size();
-        }
-
-        class MyHolder extends RecyclerView.ViewHolder{
-            TextView objectName, numOfPeople, classID ;
-            public  MyHolder(@NonNull View itemView){
-                super(itemView);
-                objectName = itemView.findViewById(R.id.objectName);
-                numOfPeople = itemView.findViewById(R.id.objectSize);
-                classID = itemView.findViewById(R.id.objectID);
-            }
+            return arrayList.size();
         }
     }
-//    private class classroomAdapter extends RecyclerView.Adapter<myClassroomViewHolder> {
-//        @NonNull
-//        @Override
-//        public myClassroomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//            LayoutInflater inflater = LayoutInflater.from(Classroom.this);
-//            View itemView = inflater.inflate(R.layout.listview_classroom, parent, false);
-//            return new myClassroomViewHolder(itemView);
-//        }
-//
-//        @Override
-//        public void onBindViewHolder(@NonNull myClassroomViewHolder holder, int position) {
-//            holder.objectName.setText(arrayList.get(position).getName());
-//            holder.numOfPeople.setText(arrayList.get(position).getSize());
-//            holder.classID.setText(arrayList.get(position).getID());
-//
-//            holder.objectName.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(Classroom.this, ListStudent.class);
-//                    startActivity(intent);
-//                }
-//            });
-//        }
-//
-//        @Override
-//        public int getItemCount() {
-//            return arrayList.size();
-//        }
-//    }
-//
-//    private class myClassroomViewHolder extends RecyclerView.ViewHolder {
-//        TextView objectName, numOfPeople, classID ;
-//        public myClassroomViewHolder(View itemView) {
-//            super(itemView);
-//            objectName = itemView.findViewById(R.id.objectName);
-//            numOfPeople = itemView.findViewById(R.id.objectSize);
-//            classID = itemView.findViewById(R.id.objectID);
-//        }
-//
-//    }
 
-    private class lop {
-        String  name, ID,size;
-
-        public lop() {
-        }
-        public lop(String ID, String name, String size) {
-            this.ID = ID;
-            this.name = name;
-            this.size = size;
-        }
-        public String getName() {
-            return name;
-        }
-        public String getID() {
-            return ID;
-        }
-        public String getSize() {
-            return size;
+    private class MyViewHolder extends RecyclerView.ViewHolder {
+        TextView objectName, numOfPeople, classID ;
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            objectName = itemView.findViewById(R.id.objectName);
+            numOfPeople = itemView.findViewById(R.id.objectSize);
+            classID = itemView.findViewById(R.id.objectID);
         }
     }
+
+
 }
