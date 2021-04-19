@@ -55,8 +55,6 @@ public class Classroom extends AppCompatActivity {
         recyclerView = findViewById(R.id.listClassroom);
         arrayList = new ArrayList<>();
         adapter = new ClassAdapter();
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(Classroom.this));
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference("Class");
@@ -64,12 +62,15 @@ public class Classroom extends AppCompatActivity {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                arrayList.removeAll(arrayList);
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     Lop lop = dataSnapshot.getValue(Lop.class);
                     if(user.getUid().equals(lop.getID_user())) {    // Nếu id_user trong class bằng với id đang đăng nhập thì mới lấy
                         arrayList.add(lop);
                     }
                 }
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(Classroom.this));
             }
 
             @Override
@@ -141,6 +142,14 @@ public class Classroom extends AppCompatActivity {
             holder.objectName.setText(lop.getLessonName());
             holder.numOfPeople.setText(Integer.toString(lop.getCount()));
             holder.classID.setText(lop.getClassID());
+
+            holder.objectName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Classroom.this,ListStudent.class);
+                    startActivity(intent);
+                }
+            });
         }
 
         @Override

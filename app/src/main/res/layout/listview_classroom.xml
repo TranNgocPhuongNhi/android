@@ -26,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Tên lớp"
-            android:textColor="@color/black"
-            android:textSize="24sp"
+            android:textColor="@color/blue"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
         <TextView
