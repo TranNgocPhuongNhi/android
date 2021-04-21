@@ -48,7 +48,6 @@ public class Classroom extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classroom);
 
-
         btnBack = (ImageView) findViewById(R.id.imageView4);
         btnAdd = (ImageView) findViewById(R.id.imageAdd);
 
@@ -125,7 +124,6 @@ public class Classroom extends AppCompatActivity {
                 alertDialog.show();
             }
         });
-
     }
 
     private class ClassAdapter extends RecyclerView.Adapter<MyViewHolder> {
@@ -140,14 +138,18 @@ public class Classroom extends AppCompatActivity {
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             Lop lop = arrayList.get(position);
             holder.objectName.setText(lop.getLessonName());
-            holder.numOfPeople.setText(Integer.toString(lop.getCount()));
-            holder.classID.setText(lop.getClassID());
+            holder.numOfPeople.setText("Số ca : "+Integer.toString(lop.getCount()));
+            holder.classID.setText("Mã lớp: "+lop.getClassID());
 
             holder.objectName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Classroom.this,ListStudent.class);
-                    startActivity(intent);
+                    intent.putExtra("classID", lop.getClassID());
+                    intent.putExtra("className",lop.getLessonName());
+                    intent.putExtra("classCount",Integer.toString(lop.getCount()));
+                    startActivityForResult(intent, 1);
+//                    startActivity(intent);
                 }
             });
         }
@@ -167,6 +169,4 @@ public class Classroom extends AppCompatActivity {
             classID = itemView.findViewById(R.id.objectID);
         }
     }
-
-
 }

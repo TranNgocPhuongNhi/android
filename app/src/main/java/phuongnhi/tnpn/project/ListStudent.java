@@ -15,21 +15,35 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ListStudent extends AppCompatActivity {
 
     ImageView btnBack, btnAdd;
+    FirebaseUser user;
     ImageView img;
     RecyclerView recyclerView;
-    TextView diemDanh;
+    TextView tenMH, diemDanh, siso;
     studentAdapter adapter;
     ArrayList<String> data;
+
+    String userID;
+    DatabaseReference myRef, myRefUser;
 
     int SELECT_PHOTO = 1;
     Uri uri;
@@ -39,14 +53,45 @@ public class ListStudent extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_student);
 
-        getData();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        userID  = user.getUid();
+
+//        getData();
         btnBack = (ImageView) findViewById(R.id.imageView5);
         btnAdd = (ImageView) findViewById(R.id.imageView6);
         diemDanh = (TextView) findViewById(R.id.diemDanh);
+        tenMH = findViewById(R.id.tenMonHoc);
+        siso = findViewById(R.id.siSo);
+
         recyclerView = (RecyclerView) findViewById(R.id.listStudent);
         adapter = new studentAdapter();
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // lấy dữ liệu từ Classroom
+        Intent intent = getIntent();
+        String takeID = intent.getStringExtra("classID");
+        tenMH.setText(intent.getStringExtra("className"));
+        siso.setText(intent.getStringExtra("classCount"));
+
+        myRef = FirebaseDatabase.getInstance().getReference("Class");
+        myRefUser = FirebaseDatabase.getInstance().getReference("Users");
+
+//        myRef.child(takeID).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                data.removeAll(data);
+//                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+//                    MyStudent myStudent = dataSnapshot.getValue(MyStudent.class);
+//                    data.add(myStudent.getIdUser());
+//                }
+//                recyclerView.setAdapter(adapter);
+//                recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Toast.makeText(ListStudent.this, "" + error, Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         diemDanh.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +100,6 @@ public class ListStudent extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,46 +107,60 @@ public class ListStudent extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(ListStudent.this);
                 View mView = getLayoutInflater().inflate(R.layout.add_student, null);
 
-                img = (ImageView) mView.findViewById(R.id.img);
                 Button btnCancel = (Button) mView.findViewById(R.id.thoatThem);
                 Button btnSave = (Button) mView.findViewById(R.id.luuThem);
+                EditText txtID = mView.findViewById(R.id.txtID);
 
                 alert.setView(mView);
-
                 AlertDialog alertDialog = alert.create();
                 alertDialog.setCanceledOnTouchOutside(false);
-
                 btnCancel.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         alertDialog.dismiss();
                     }
                 });
-
                 btnSave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(ListStudent.this, "Save", Toast.LENGTH_SHORT).show();
+                        String ID_user = txtID.getText().toString();
+                        checkUser(ID_user);
+                        txtID.setText("");
                     }
                 });
-
-//                img.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Intent gallery = new Intent(Intent.ACTION_PICK);
-//                        gallery.setType("image/*");
-//                        startActivityForResult(gallery, SELECT_PHOTO);
-//                    }
-//                });
-
                 alertDialog.show();
+            }
+        });
+    }
+
+    private void checkUser(String ID_user) {
+        myRefUser.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                    Users users = dataSnapshot.getValue(Users.class);
+                    if(!users.getId().equals(userID) && users.getAuthority().equals("Sinh viên")) {
+                        if(users.getIdUser().equals(ID_user)){
+                            myRef.child("list_student").child(ID_user).child("idUser").setValue(ID_user);
+                            myRef.child("list_student").child(ID_user).child("fullname").setValue(users.getFullname());
+                            Toast.makeText(ListStudent.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+                            break;
+                        }else {
+                            Toast.makeText(ListStudent.this, "Không có học sinh này", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ListStudent.this, "" + error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -123,25 +181,25 @@ public class ListStudent extends AppCompatActivity {
 //        }
 //    }
 
-    private void getData() {
-        data = new ArrayList<>();
-        for(int i=1; i<=50; i++) {
-            data.add("Item " + i);
-        }
-    }
-
-    private class studentAdapter extends RecyclerView.Adapter<myStudentViewHoler> {
+//    private void getData() {
+//        data = new ArrayList<>();
+//        for(int i=1; i<=10; i++) {
+//            data.add("Item " + i);
+//        }
+//    }
+    private class studentAdapter extends RecyclerView.Adapter<myStudentViewHolder> {
         @NonNull
         @Override
-        public myStudentViewHoler onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public myStudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(ListStudent.this);
             View itemView = inflater.inflate(R.layout.list_student, parent, false);
-            return new myStudentViewHoler(itemView);
+            return new myStudentViewHolder(itemView);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull myStudentViewHoler holder, int position) {
+        public void onBindViewHolder(@NonNull myStudentViewHolder holder, int position) {
             holder.nameStudent.setText(data.get(position));
+
             holder.btnOptions.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -151,39 +209,6 @@ public class ListStudent extends AppCompatActivity {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch(item.getItemId()) {
-                                case R.id.editStudent:
-                                    AlertDialog.Builder alert = new AlertDialog.Builder(ListStudent.this);
-                                    View mView = getLayoutInflater().inflate(R.layout.edit_information_student, null);
-
-//                                    EditText editTenPercent = (EditText) mView.findViewById(R.id.editTenPercent);
-//                                    EditText editTwentyPercent = (EditText) mView.findViewById(R.id.editTwentyPercent);
-//                                    EditText editMidterm = (EditText) mView.findViewById(R.id.editMidterm);
-//                                    EditText editFinalExam = (EditText) mView.findViewById(R.id.editFinalExam);
-                                    Button btnCancel = (Button) mView.findViewById(R.id.btnCancel);
-                                    Button btnSave = (Button) mView.findViewById(R.id.btnSave);
-
-                                    alert.setView(mView);
-
-                                    AlertDialog alertDialog = alert.create();
-                                    alertDialog.setCanceledOnTouchOutside(false);
-
-                                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            alertDialog.dismiss();
-                                        }
-                                    });
-
-                                    btnSave.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            Toast.makeText(ListStudent.this, "Save", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-                                    alertDialog.show();
-//                                    Toast.makeText(ListStudent.this, "Edit Student", Toast.LENGTH_SHORT).show();
-                                    break;
                                 case R.id.deleteStudent:
                                     new AlertDialog.Builder(ListStudent.this)
                                             .setTitle("Bạn có chắc muốn xóa " + data.get(position) + "?")
@@ -198,10 +223,6 @@ public class ListStudent extends AppCompatActivity {
                                             .setNegativeButton("No", null)
                                             .show();
                                     break;
-                                case R.id.scoreStudent:
-                                    Intent intent = new Intent(ListStudent.this, StudentGrade.class);
-                                    startActivity(intent);
-                                    break;
                             }
                             return false;
                         }
@@ -210,21 +231,37 @@ public class ListStudent extends AppCompatActivity {
                 }
             });
         }
-
         @Override
         public int getItemCount() {
             return data.size();
         }
     }
 
-    private class myStudentViewHoler extends RecyclerView.ViewHolder {
+    private class myStudentViewHolder extends RecyclerView.ViewHolder {
         TextView nameStudent, btnOptions;
         ImageView img;
-        public myStudentViewHoler(View itemView) {
+        public myStudentViewHolder(View itemView) {
             super(itemView);
             nameStudent = itemView.findViewById(R.id.nameSV);
             img = itemView.findViewById(R.id.imgSV);
             btnOptions = itemView.findViewById(R.id.textViewOptions);
+        }
+    }
+
+    private class MyStudent {
+        String fullname;
+        String idUser;
+        public MyStudent() {
+        }
+        public MyStudent(String fullname, String idUser) {
+            this.fullname = fullname;
+            this.idUser = idUser;
+        }
+        public String getFullname() {
+            return fullname;
+        }
+        public String getIdUser() {
+            return idUser;
         }
     }
 }
