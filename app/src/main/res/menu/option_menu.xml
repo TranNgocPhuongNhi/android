@@ -3,6 +3,8 @@
 
     <item android:title="Chỉnh sửa"
         android:id="@+id/sua"/>
+    <item android:title="Đổi mật khẩu"
+        android:id="@+id/changePassword"/>
     <item android:title="Đăng xuất"
         android:id="@+id/logout"/>
 </menu>
