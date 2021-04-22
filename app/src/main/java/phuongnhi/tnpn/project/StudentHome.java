@@ -7,6 +7,7 @@ import androidx.cardview.widget.CardView;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -165,6 +166,34 @@ public class StudentHome extends AppCompatActivity {
                                 });
 
                                 alertDialog.show();
+                                break;
+                            case R.id.changePassword:
+                                EditText changePassword = new EditText(StudentHome.this);
+                                AlertDialog.Builder changePasswordDialog = new AlertDialog.Builder(StudentHome.this);
+                                changePasswordDialog.setTitle("Đổi mật khẩu");
+                                changePasswordDialog.setMessage("Nhập mật khẩu mới ít nhất 6 ký tự");
+                                changePasswordDialog.setView(changePassword);
+
+                                changePasswordDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        String newPassword = changePassword.getText().toString();
+                                        user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                reference.child(userID).child("password").setValue(newPassword);
+                                                Toast.makeText(StudentHome.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(StudentHome.this, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                });
+                                changePasswordDialog.setNegativeButton("No", null);
+                                changePasswordDialog.show();
                                 break;
                             case R.id.logout:
                                 FirebaseAuth.getInstance().signOut();
