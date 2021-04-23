@@ -93,6 +93,10 @@ public class ListStudent extends AppCompatActivity {
 //                    String key = String.valueOf(map.get("fullname"));
                     data.add(myStudent);
                 }
+
+                if(adapter.getItemCount()==0){
+                    diemDanh.setVisibility(View.INVISIBLE);
+                }
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
             }
@@ -167,6 +171,7 @@ public class ListStudent extends AppCompatActivity {
                     }
                 }
 //                Toast.makeText(ListStudent.this, "Không có học sinh này", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -191,20 +196,12 @@ public class ListStudent extends AppCompatActivity {
 //            }
 //        }
 //    }
-
-//    private void getData() {
-//        data = new ArrayList<>();
-//        for(int i=1; i<=10; i++) {
-//            MyStudent myStudent = new MyStudent();
-//            data.add(myStudent);
-//        }
-//    }
     private class studentAdapter extends RecyclerView.Adapter<myStudentViewHolder> {
         @NonNull
         @Override
         public myStudentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(ListStudent.this);
-            View itemView = inflater.inflate(R.layout.list_student, parent, false);
+            View itemView = inflater.inflate(R.layout.list_users, parent, false);
             return new myStudentViewHolder(itemView);
         }
 
@@ -212,38 +209,26 @@ public class ListStudent extends AppCompatActivity {
         public void onBindViewHolder(@NonNull myStudentViewHolder holder, int position) {
             MyStudent myStudent = data.get(position);
             holder.nameStudent.setText(myStudent.getFullName());
-
-            holder.btnOptions.setOnClickListener(new View.OnClickListener() {
+            holder.nameStudent.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public void onClick(View v) {
-                    PopupMenu popupMenu = new PopupMenu(ListStudent.this, holder.btnOptions);
-                    popupMenu.getMenuInflater().inflate(R.menu.options_menu_student, popupMenu.getMenu());
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch(item.getItemId()) {
-                                case R.id.deleteOp:
-                                    new AlertDialog.Builder(ListStudent.this)
-                                        .setTitle("Bạn có chắc muốn xóa học viên khỏi lớp?")
-                                        .setMessage(myStudent.getFullName()+"\nID: " + myStudent.getIdUser())
-                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                myRef.child("list_student").child(myStudent.getIdUser()).removeValue();
-                                                data.remove(position);
-                                                adapter.notifyDataSetChanged();
-                                            }
-                                        })
-                                        .setNegativeButton("No", null)
-                                        .show();
-                                    break;
+                public boolean onLongClick(View v) {
+                    new AlertDialog.Builder(ListStudent.this)
+                        .setTitle("Bạn có chắc muốn xóa học viên khỏi lớp?")
+                        .setMessage(myStudent.getFullName()+"\nID: " + myStudent.getIdUser())
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                myRef.child("list_student").child(myStudent.getIdUser()).removeValue();
+                                data.remove(position);
+                                adapter.notifyDataSetChanged();
                             }
-                            return false;
-                        }
-                    });
-                    popupMenu.show();
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+                    return false;
                 }
             });
+
         }
         @Override
         public int getItemCount() {
@@ -257,8 +242,8 @@ public class ListStudent extends AppCompatActivity {
         public myStudentViewHolder(View itemView) {
             super(itemView);
             nameStudent = itemView.findViewById(R.id.nameSV);
-            img = itemView.findViewById(R.id.imgSV);
-            btnOptions = itemView.findViewById(R.id.textViewOptions);
+//            img = itemView.findViewById(R.id.imgSV);
+//            btnOptions = itemView.findViewById(R.id.textViewOptions);
         }
     }
 

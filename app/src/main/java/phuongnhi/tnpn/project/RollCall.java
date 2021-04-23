@@ -37,8 +37,8 @@ import java.util.Map;
 public class RollCall extends AppCompatActivity {
 
     FirebaseUser user;
-    String userID;
-    DatabaseReference myRef, myRefUser;
+    String userID, datetime;
+    DatabaseReference myRef, myRefAttendance;
 
     ImageView btnBack, btnAdd;
     RecyclerView recyclerView;
@@ -58,7 +58,7 @@ public class RollCall extends AppCompatActivity {
         txt = findViewById(R.id.tenMonHoc);
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        String datetime = dateFormat.format(calendar.getTime());
+        datetime = dateFormat.format(calendar.getTime());
         txt.setText(datetime);
 
         //dùng lại layout cũ nên ẩn cái này
@@ -78,10 +78,22 @@ public class RollCall extends AppCompatActivity {
             }
         });
 
+        //
+        myRefAttendance = FirebaseDatabase.getInstance().getReference("Attendance").child(takeID);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+//                myRefAttendance.child("Date: "+ datetime).child("123").setValue(123);
+            }
+        });
         recyclerView = (RecyclerView) findViewById(R.id.listStudent);
         adapter = new studentAdapter();
         data = new ArrayList<ListStudent.MyStudent>();
+        status = new ArrayList<Boolean>();
 
+        //lấy dữ liệu từ class
         myRef = FirebaseDatabase.getInstance().getReference("Class").child(takeID);
         myRef.child("list_student").addValueEventListener(new ValueEventListener() {
             @Override
@@ -91,6 +103,7 @@ public class RollCall extends AppCompatActivity {
                     Map map = (Map) dataSnapshot.getValue();
                     ListStudent.MyStudent myStudent = new ListStudent.MyStudent(String.valueOf(map.get("fullname")), String.valueOf(map.get("idUser")));
                     data.add(myStudent);
+                    status.add(false);
                 }
                 recyclerView.setAdapter(adapter);
                 recyclerView.setLayoutManager(new LinearLayoutManager(RollCall.this));
@@ -115,8 +128,21 @@ public class RollCall extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull myStudentViewHolder holder, int position) {
             ListStudent.MyStudent myStudent = data.get(position);
-            holder.nameStudent.setText(myStudent.getFullName());
+            holder.nameStudent.setText(myStudent.getFullName()+"\nID: "+myStudent.getIdUser());
+            holder.nameStudent.setChecked(status.get(position));
 
+            holder.nameStudent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    status.set(position, !status.get(position));
+                    adapter.notifyDataSetChanged();
+                }
+            });
+            if (status.get(position)) {
+                myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).setValue("A");
+            } else {
+                myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).setValue("P");
+            }
 
         }
         @Override
@@ -126,12 +152,12 @@ public class RollCall extends AppCompatActivity {
     }
 
     private class myStudentViewHolder extends RecyclerView.ViewHolder {
-        TextView nameStudent, btnOptions;
+//        TextView nameStudent;
+        CheckedTextView nameStudent;
         ImageView img;
         public myStudentViewHolder(View itemView) {
             super(itemView);
             nameStudent = itemView.findViewById(android.R.id.text1);
-//            img = itemView.findViewById(R.id.);
         }
     }
 
