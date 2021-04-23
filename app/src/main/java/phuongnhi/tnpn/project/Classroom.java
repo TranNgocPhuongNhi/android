@@ -8,9 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +35,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Classroom extends AppCompatActivity {
@@ -109,14 +114,14 @@ public class Classroom extends AppCompatActivity {
                 btnSave.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String codeC = txt3.getText().toString();
+//                        String codeC = txt3.getText().toString();
                         String ID_user = user.getUid();
                         String classID = txt3.getText().toString();
                         int count = Integer.parseInt(txt2.getText().toString());
                         String lessonName = txt1.getText().toString();
                         // Thêm lớp mới vào
                         Lop lop = new Lop(ID_user, classID, lessonName, count);
-                        myRef.child(codeC).setValue(lop);
+                        myRef.child(classID).setValue(lop);
 
                         alertDialog.dismiss();
                     }
@@ -141,7 +146,7 @@ public class Classroom extends AppCompatActivity {
             holder.numOfPeople.setText("Số ca : "+Integer.toString(lop.getCount()));
             holder.classID.setText("Mã lớp: "+lop.getClassID());
 
-            holder.objectName.setOnClickListener(new View.OnClickListener() {
+            holder.itemObject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Classroom.this,ListStudent.class);
@@ -150,6 +155,77 @@ public class Classroom extends AppCompatActivity {
                     intent.putExtra("classCount",Integer.toString(lop.getCount()));
                     startActivityForResult(intent, 1);
 //                    startActivity(intent);
+                }
+            });
+            holder.itemObject.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(Classroom.this, holder.itemObject);
+                    popupMenu.getMenuInflater().inflate(R.menu.options_menu_student, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch(item.getItemId()) {
+                                case  R.id.editOp:
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(Classroom.this);
+                                    View mView = getLayoutInflater().inflate(R.layout.add_class, null);
+
+                                    EditText txt1 = mView.findViewById(R.id.className);
+                                    EditText txt2 = mView.findViewById(R.id.classSize);
+                                    EditText txt3 = mView.findViewById(R.id.classID);
+
+                                    txt3.setEnabled(false);
+                                    txt3.setTextColor(Color.GRAY);
+                                    txt3.setGravity(Gravity.CENTER);
+                                    txt1.setText(lop.getLessonName());
+                                    txt2.setText(Integer.toString(lop.getCount()));
+                                    txt3.setText(lop.getClassID());
+                                    Button btnCancel = (Button) mView.findViewById(R.id.button3);
+                                    Button btnSave = (Button) mView.findViewById(R.id.button4);
+
+                                    alert.setView(mView);
+                                    AlertDialog alertDialog = alert.create();
+                                    alertDialog.setCanceledOnTouchOutside(false);
+                                    btnCancel.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            alertDialog.dismiss();
+                                        }
+                                    });
+                                    btnSave.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Map<String, Object> updateClass = new HashMap<String, Object>();
+                                            updateClass.put("lessonName", txt1.getText().toString());
+                                            updateClass.put("classID", txt3.getText().toString());
+                                            updateClass.put("count", Integer.parseInt(txt2.getText().toString()));
+
+                                            myRef.child(lop.getClassID()).updateChildren(updateClass);
+                                            alertDialog.dismiss();
+                                        }
+                                    });
+                                    alertDialog.show();
+                                    break;
+                                case R.id.deleteOp:
+                                    new AlertDialog.Builder(Classroom.this)
+                                            .setTitle("Bạn có chắc muốn xóa lớp học này?")
+                                            .setMessage(lop.getLessonName()+"\nID: " + lop.getClassID())
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    myRef.child(lop.getClassID()).removeValue();
+                                                    arrayList.remove(position);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            })
+                                            .setNegativeButton("No", null).show();
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    popupMenu.show();
+                    return false;
                 }
             });
         }
@@ -162,11 +238,13 @@ public class Classroom extends AppCompatActivity {
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
         TextView objectName, numOfPeople, classID ;
+        View itemObject;
         public MyViewHolder(View itemView) {
             super(itemView);
             objectName = itemView.findViewById(R.id.objectName);
             numOfPeople = itemView.findViewById(R.id.objectSize);
             classID = itemView.findViewById(R.id.objectID);
+            itemObject = itemView.findViewById(R.id.itemObject);
         }
     }
 }

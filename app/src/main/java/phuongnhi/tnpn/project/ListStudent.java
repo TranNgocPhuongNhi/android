@@ -40,9 +40,9 @@ public class ListStudent extends AppCompatActivity {
     RecyclerView recyclerView;
     TextView tenMH, diemDanh, siso;
     studentAdapter adapter;
-    ArrayList<String> data;
+    ArrayList<MyStudent> data;
 
-    String userID;
+    String userID, takeID;
     DatabaseReference myRef, myRefUser;
 
     int SELECT_PHOTO = 1;
@@ -56,6 +56,7 @@ public class ListStudent extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         userID  = user.getUid();
 
+        data = new ArrayList<MyStudent>();
 //        getData();
         btnBack = (ImageView) findViewById(R.id.imageView5);
         btnAdd = (ImageView) findViewById(R.id.imageView6);
@@ -66,38 +67,49 @@ public class ListStudent extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.listStudent);
         adapter = new studentAdapter();
 
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
+
         // lấy dữ liệu từ Classroom
         Intent intent = getIntent();
-        String takeID = intent.getStringExtra("classID");
+        takeID = intent.getStringExtra("classID");
         tenMH.setText(intent.getStringExtra("className"));
-        siso.setText(intent.getStringExtra("classCount"));
+//        siso.setText(intent.getStringExtra("classCount"));
 
-        myRef = FirebaseDatabase.getInstance().getReference("Class");
+        myRef = FirebaseDatabase.getInstance().getReference("Class").child(takeID);
         myRefUser = FirebaseDatabase.getInstance().getReference("Users");
 
-//        myRef.child(takeID).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                data.removeAll(data);
-//                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+        myRef.child("list_student").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                siso.setText(snapshot.getChildrenCount()+"");
+                data.removeAll(data);
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
 //                    MyStudent myStudent = dataSnapshot.getValue(MyStudent.class);
-//                    data.add(myStudent.getIdUser());
-//                }
-//                recyclerView.setAdapter(adapter);
-//                recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(ListStudent.this, "" + error, Toast.LENGTH_SHORT).show();
-//            }
-//        });
+                    Map map = (Map) dataSnapshot.getValue();
+//                    data.add(map.get("fullname").toString());
+//                    data.add(myStudent.getFullname());
+                    MyStudent myStudent = new MyStudent(String.valueOf(map.get("fullname")), String.valueOf(map.get("idUser")));
+//                    String key = String.valueOf(map.get("fullname"));
+                    data.add(myStudent);
+                }
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ListStudent.this, "" + error, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         diemDanh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ListStudent.this, RollCall.class);
-                startActivity(intent);
+                intent.putExtra("classID", takeID);
+                startActivityForResult(intent, 1);
+//                startActivity(intent);
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -146,16 +158,15 @@ public class ListStudent extends AppCompatActivity {
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     Users users = dataSnapshot.getValue(Users.class);
                     if(!users.getId().equals(userID) && users.getAuthority().equals("Sinh viên")) {
-                        if(users.getIdUser().equals(ID_user)){
+                        if (users.getIdUser().equals(ID_user)) {
                             myRef.child("list_student").child(ID_user).child("idUser").setValue(ID_user);
                             myRef.child("list_student").child(ID_user).child("fullname").setValue(users.getFullname());
                             Toast.makeText(ListStudent.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
                             break;
-                        }else {
-                            Toast.makeText(ListStudent.this, "Không có học sinh này", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
+//                Toast.makeText(ListStudent.this, "Không có học sinh này", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -184,7 +195,8 @@ public class ListStudent extends AppCompatActivity {
 //    private void getData() {
 //        data = new ArrayList<>();
 //        for(int i=1; i<=10; i++) {
-//            data.add("Item " + i);
+//            MyStudent myStudent = new MyStudent();
+//            data.add(myStudent);
 //        }
 //    }
     private class studentAdapter extends RecyclerView.Adapter<myStudentViewHolder> {
@@ -198,7 +210,8 @@ public class ListStudent extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull myStudentViewHolder holder, int position) {
-            holder.nameStudent.setText(data.get(position));
+            MyStudent myStudent = data.get(position);
+            holder.nameStudent.setText(myStudent.getFullName());
 
             holder.btnOptions.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -209,19 +222,20 @@ public class ListStudent extends AppCompatActivity {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch(item.getItemId()) {
-                                case R.id.deleteStudent:
+                                case R.id.deleteOp:
                                     new AlertDialog.Builder(ListStudent.this)
-                                            .setTitle("Bạn có chắc muốn xóa " + data.get(position) + "?")
-                                            .setMessage("Xóa " + data.get(position))
-                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    data.remove(position);
-                                                    adapter.notifyDataSetChanged();
-                                                }
-                                            })
-                                            .setNegativeButton("No", null)
-                                            .show();
+                                        .setTitle("Bạn có chắc muốn xóa học viên khỏi lớp?")
+                                        .setMessage(myStudent.getFullName()+"\nID: " + myStudent.getIdUser())
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                myRef.child("list_student").child(myStudent.getIdUser()).removeValue();
+                                                data.remove(position);
+                                                adapter.notifyDataSetChanged();
+                                            }
+                                        })
+                                        .setNegativeButton("No", null)
+                                        .show();
                                     break;
                             }
                             return false;
@@ -248,17 +262,17 @@ public class ListStudent extends AppCompatActivity {
         }
     }
 
-    private class MyStudent {
-        String fullname;
+    public static class MyStudent {
+        String fullName;
         String idUser;
         public MyStudent() {
         }
-        public MyStudent(String fullname, String idUser) {
-            this.fullname = fullname;
+        public MyStudent(String fullName, String idUser) {
+            this.fullName = fullName;
             this.idUser = idUser;
         }
-        public String getFullname() {
-            return fullname;
+        public String getFullName() {
+            return fullName;
         }
         public String getIdUser() {
             return idUser;

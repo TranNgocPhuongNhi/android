@@ -7,6 +7,16 @@
     android:orientation="vertical">
 
     <EditText
+        android:id="@+id/classID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Class ID"
+        android:inputType="textPersonName"
+        android:paddingLeft="20dp"
+        android:textColor="@color/blue_dark" />
+
+    <EditText
         android:id="@+id/className"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,18 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Sĩ số"
+        android:hint="Số ca học"
         android:inputType="number"
-        android:paddingLeft="20dp"
-        android:textColor="@color/blue_dark" />
-
-    <EditText
-        android:id="@+id/classID"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Class ID"
-        android:inputType="textPersonName"
         android:paddingLeft="20dp"
         android:textColor="@color/blue_dark" />
 
