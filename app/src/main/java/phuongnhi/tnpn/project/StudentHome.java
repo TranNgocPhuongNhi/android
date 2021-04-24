@@ -50,6 +50,7 @@ public class StudentHome extends AppCompatActivity {
     int REQUEST_CODE_IMAGE = 1;
     Uri imageUri;
     String myUri = "";
+    String ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,9 @@ public class StudentHome extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(StudentHome.this, StudySituation.class);
-                startActivity(intent);
+                intent.putExtra("idUser",ID);
+                startActivityForResult(intent,1);
+//                startActivity(intent);
             }
         });
 
@@ -95,6 +98,7 @@ public class StudentHome extends AppCompatActivity {
                 if(userProfile != null) {
                     String fullname = userProfile.fullname;
                     img = userProfile.image;
+                    ID = userProfile.getIdUser();
                     nameofStudent.setText(fullname);
                     // Lấy hình gán vào dùng thư viện Picasso
                     Picasso.with(StudentHome.this).load(img).into(imgView);

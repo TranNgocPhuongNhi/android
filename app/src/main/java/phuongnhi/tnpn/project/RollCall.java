@@ -37,7 +37,7 @@ import java.util.Map;
 public class RollCall extends AppCompatActivity {
 
     FirebaseUser user;
-    String userID, datetime;
+    public static String userID, datetime;
     DatabaseReference myRef, myRefAttendance;
 
     ImageView btnBack, btnAdd;
@@ -61,15 +61,17 @@ public class RollCall extends AppCompatActivity {
         datetime = dateFormat.format(calendar.getTime());
         txt.setText(datetime);
 
+        btnBack = (ImageView) findViewById(R.id.imageView5);
+
         //dùng lại layout cũ nên ẩn cái này
         linearLayout =findViewById(R.id.linearlayout);
         linearLayout.setVisibility(View.INVISIBLE);
+        btnAdd = findViewById(R.id.imageView6);
+        btnAdd.setVisibility(View.INVISIBLE);
 
         Intent intent = getIntent();
         String takeID = intent.getStringExtra("classID");
 
-        btnBack = (ImageView) findViewById(R.id.imageView5);
-        btnAdd = (ImageView) findViewById(R.id.imageView6);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,23 +80,17 @@ public class RollCall extends AppCompatActivity {
             }
         });
 
-        //
         myRefAttendance = FirebaseDatabase.getInstance().getReference("Attendance").child(takeID);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        myRef = FirebaseDatabase.getInstance().getReference("Class").child(takeID);
 
-
-//                myRefAttendance.child("Date: "+ datetime).child("123").setValue(123);
-            }
-        });
         recyclerView = (RecyclerView) findViewById(R.id.listStudent);
         adapter = new studentAdapter();
         data = new ArrayList<ListStudent.MyStudent>();
         status = new ArrayList<Boolean>();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(RollCall.this));
 
         //lấy dữ liệu từ class
-        myRef = FirebaseDatabase.getInstance().getReference("Class").child(takeID);
         myRef.child("list_student").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -105,8 +101,7 @@ public class RollCall extends AppCompatActivity {
                     data.add(myStudent);
                     status.add(false);
                 }
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(RollCall.this));
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -138,12 +133,11 @@ public class RollCall extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }
             });
+            String check="P";
             if (status.get(position)) {
-                myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).setValue("A");
-            } else {
-                myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).setValue("P");
+                check = "A";
             }
-
+            myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).setValue(check);
         }
         @Override
         public int getItemCount() {
@@ -152,7 +146,6 @@ public class RollCall extends AppCompatActivity {
     }
 
     private class myStudentViewHolder extends RecyclerView.ViewHolder {
-//        TextView nameStudent;
         CheckedTextView nameStudent;
         ImageView img;
         public myStudentViewHolder(View itemView) {

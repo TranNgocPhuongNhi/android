@@ -59,6 +59,8 @@ public class Classroom extends AppCompatActivity {
         recyclerView = findViewById(R.id.listClassroom);
         arrayList = new ArrayList<>();
         adapter = new ClassAdapter();
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(Classroom.this));
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference("Class");
@@ -73,8 +75,7 @@ public class Classroom extends AppCompatActivity {
                         arrayList.add(lop);
                     }
                 }
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(Classroom.this));
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -122,7 +123,6 @@ public class Classroom extends AppCompatActivity {
                         // Thêm lớp mới vào
                         Lop lop = new Lop(ID_user, classID, lessonName, count);
                         myRef.child(classID).setValue(lop);
-
                         alertDialog.dismiss();
                     }
                 });
@@ -154,7 +154,6 @@ public class Classroom extends AppCompatActivity {
                     intent.putExtra("className",lop.getLessonName());
                     intent.putExtra("classCount",Integer.toString(lop.getCount()));
                     startActivityForResult(intent, 1);
-//                    startActivity(intent);
                 }
             });
             holder.itemObject.setOnLongClickListener(new View.OnLongClickListener() {

@@ -29,7 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Map;
 
 public class ListStudent extends AppCompatActivity {
@@ -42,8 +44,8 @@ public class ListStudent extends AppCompatActivity {
     studentAdapter adapter;
     ArrayList<MyStudent> data;
 
-    String userID, takeID;
-    DatabaseReference myRef, myRefUser;
+    String userID, takeID, datetime;
+    DatabaseReference myRef, myRefUser, myRefAttendance;
 
     int SELECT_PHOTO = 1;
     Uri uri;
@@ -56,8 +58,11 @@ public class ListStudent extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         userID  = user.getUid();
 
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        datetime = dateFormat.format(calendar.getTime());
         data = new ArrayList<MyStudent>();
-//        getData();
+
         btnBack = (ImageView) findViewById(R.id.imageView5);
         btnAdd = (ImageView) findViewById(R.id.imageView6);
         diemDanh = (TextView) findViewById(R.id.diemDanh);
@@ -66,7 +71,6 @@ public class ListStudent extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.listStudent);
         adapter = new studentAdapter();
-
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
 
@@ -74,8 +78,8 @@ public class ListStudent extends AppCompatActivity {
         Intent intent = getIntent();
         takeID = intent.getStringExtra("classID");
         tenMH.setText(intent.getStringExtra("className"));
-//        siso.setText(intent.getStringExtra("classCount"));
 
+        myRefAttendance = FirebaseDatabase.getInstance().getReference("Attendance").child(takeID);
         myRef = FirebaseDatabase.getInstance().getReference("Class").child(takeID);
         myRefUser = FirebaseDatabase.getInstance().getReference("Users");
 
@@ -85,20 +89,15 @@ public class ListStudent extends AppCompatActivity {
                 siso.setText(snapshot.getChildrenCount()+"");
                 data.removeAll(data);
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
-//                    MyStudent myStudent = dataSnapshot.getValue(MyStudent.class);
                     Map map = (Map) dataSnapshot.getValue();
-//                    data.add(map.get("fullname").toString());
-//                    data.add(myStudent.getFullname());
                     MyStudent myStudent = new MyStudent(String.valueOf(map.get("fullname")), String.valueOf(map.get("idUser")));
-//                    String key = String.valueOf(map.get("fullname"));
                     data.add(myStudent);
                 }
 
                 if(adapter.getItemCount()==0){
                     diemDanh.setVisibility(View.INVISIBLE);
-                }
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
+                }else diemDanh.setVisibility(View.VISIBLE);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -113,7 +112,6 @@ public class ListStudent extends AppCompatActivity {
                 Intent intent = new Intent(ListStudent.this, RollCall.class);
                 intent.putExtra("classID", takeID);
                 startActivityForResult(intent, 1);
-//                startActivity(intent);
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -159,43 +157,26 @@ public class ListStudent extends AppCompatActivity {
         myRefUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String message = "Sinh viên không tồn tại!";
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     Users users = dataSnapshot.getValue(Users.class);
                     if(!users.getId().equals(userID) && users.getAuthority().equals("Sinh viên")) {
                         if (users.getIdUser().equals(ID_user)) {
                             myRef.child("list_student").child(ID_user).child("idUser").setValue(ID_user);
                             myRef.child("list_student").child(ID_user).child("fullname").setValue(users.getFullname());
-                            Toast.makeText(ListStudent.this, "Thêm thành công", Toast.LENGTH_SHORT).show();
+                            message = "Thêm thành công";
                             break;
                         }
                     }
                 }
-//                Toast.makeText(ListStudent.this, "Không có học sinh này", Toast.LENGTH_SHORT).show();
-
+                Toast.makeText(ListStudent.this, message, Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(ListStudent.this, "" + error, Toast.LENGTH_SHORT).show();
             }
         });
     }
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if(requestCode == SELECT_PHOTO && requestCode == RESULT_OK && data != null && data.getData() != null) {
-//            uri = data.getData();
-//            try {
-//                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-//                img.setImageBitmap(bitmap);
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
     private class studentAdapter extends RecyclerView.Adapter<myStudentViewHolder> {
         @NonNull
         @Override
@@ -219,6 +200,7 @@ public class ListStudent extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 myRef.child("list_student").child(myStudent.getIdUser()).removeValue();
+                                myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).removeValue();
                                 data.remove(position);
                                 adapter.notifyDataSetChanged();
                             }
@@ -228,7 +210,6 @@ public class ListStudent extends AppCompatActivity {
                     return false;
                 }
             });
-
         }
         @Override
         public int getItemCount() {
