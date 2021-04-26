@@ -40,7 +40,7 @@ public class ListStudent extends AppCompatActivity {
     FirebaseUser user;
     ImageView img;
     RecyclerView recyclerView;
-    TextView tenMH, diemDanh, siso;
+    TextView tenMH, diemDanh, siso, qrCode;
     studentAdapter adapter;
     ArrayList<MyStudent> data;
 
@@ -66,6 +66,7 @@ public class ListStudent extends AppCompatActivity {
         btnBack = (ImageView) findViewById(R.id.imageView5);
         btnAdd = (ImageView) findViewById(R.id.imageView6);
         diemDanh = (TextView) findViewById(R.id.diemDanh);
+        qrCode = findViewById(R.id.qrCode);
         tenMH = findViewById(R.id.tenMonHoc);
         siso = findViewById(R.id.siSo);
 
@@ -117,8 +118,38 @@ public class ListStudent extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ListStudent.this, Classroom.class);
-                startActivity(intent);
+                finish();
+            }
+        });
+        qrCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(ListStudent.this);
+                View mView = getLayoutInflater().inflate(R.layout.add_student, null);
+
+                Button btnCancel = (Button) mView.findViewById(R.id.thoatThem);
+                Button btnSave = (Button) mView.findViewById(R.id.luuThem);
+                EditText txtID = mView.findViewById(R.id.txtID);
+                String tam = "0ma1qr2code3nay4rat5dai6de7khoi8bi9biet10";
+                txtID.setText(tam);
+                alert.setView(mView);
+                AlertDialog alertDialog = alert.create();
+                alertDialog.setCanceledOnTouchOutside(false);
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myRefAttendance.child("Date: " + datetime).child("CodeNow").removeValue();
+                        alertDialog.dismiss();
+                    }
+                });
+                btnSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        myRefAttendance.child("Date: " + datetime).child("CodeNow").setValue(txtID.getText().toString());
+
+                    }
+                });
+                alertDialog.show();
             }
         });
         btnAdd.setOnClickListener(new View.OnClickListener() {

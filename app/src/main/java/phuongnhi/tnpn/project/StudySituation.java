@@ -29,7 +29,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +45,15 @@ public class StudySituation extends AppCompatActivity {
     ArrayList<Lop> data;
     List<String> date= new ArrayList<String>();
     ClassAdapter adapter;
-    String takeID,takeName;
+    String takeID,takeName,datetime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classroom);
+
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        datetime = "Date: "+dateFormat.format(calendar.getTime());
 
         Intent intent = getIntent();
         takeID = intent.getStringExtra("idUser");
@@ -149,6 +155,34 @@ public class StudySituation extends AppCompatActivity {
                     AlertDialog alertDialog = alert.create();
                     alertDialog.setCanceledOnTouchOutside(true);
                     alertDialog.show();
+                }
+            });
+            holder.itemObject.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    myRefAttendance.child(lop.getClassID()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            date.removeAll(date);
+                            long numDay = snapshot.getChildrenCount();
+                            for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                for(DataSnapshot dataSnapshotValue:dataSnapshot.getChildren())
+                                    if(dataSnapshotValue.getKey().equals("CodeNow")){
+                                        Intent intent = new Intent(StudySituation.this, QRScan.class);
+                                        intent.putExtra("takeClass",lop.getClassID());
+                                        intent.putExtra("takeID",takeID);
+                                        intent.putExtra("date", datetime);
+                                        startActivity(intent);
+                                    }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    return false;
                 }
             });
         }
