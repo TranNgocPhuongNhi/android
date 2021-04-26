@@ -28,19 +28,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class StudySituation extends AppCompatActivity {
 
     ImageView btnBack;
 
-    DatabaseReference myRef;
+    DatabaseReference myRef, myRefAttendance;
     RecyclerView recyclerView;
     ArrayList<Lop> data;
+    List<String> date= new ArrayList<String>();
     ClassAdapter adapter;
-    String takeID;
+    String takeID,takeName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,7 @@ public class StudySituation extends AppCompatActivity {
 
         Intent intent = getIntent();
         takeID = intent.getStringExtra("idUser");
+        takeName = intent.getStringExtra("fullName");
         btnBack = (ImageView) findViewById(R.id.imageView4);
         ImageView btnAdd = (ImageView) findViewById(R.id.imageAdd);
         btnAdd.setVisibility(View.INVISIBLE);
@@ -55,8 +59,7 @@ public class StudySituation extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StudySituation.this, StudentHome.class);
-                startActivity(intent);
+                finish();
             }
         });
 
@@ -66,6 +69,7 @@ public class StudySituation extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(StudySituation.this));
 
+        myRefAttendance = FirebaseDatabase.getInstance().getReference("Attendance");
         myRef = FirebaseDatabase.getInstance().getReference("Class");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -76,7 +80,6 @@ public class StudySituation extends AppCompatActivity {
                     try{
                         Map newMap =(Map) map.get("list_student");
                         if(newMap.get(takeID)!= null) {
-
                             Lop lop = new Lop(String.valueOf(map.get("ID_user")), String.valueOf(map.get("classID")),String.valueOf(map.get("lessonName")),Integer.parseInt(String.valueOf(map.get("count"))));
                             data.add(lop);
                         }
@@ -105,17 +108,49 @@ public class StudySituation extends AppCompatActivity {
             holder.objectName.setText(lop.getLessonName());
             holder.numOfPeople.setText("Số ca : "+Integer.toString(lop.getCount()));
             holder.classID.setText("Mã lớp: "+lop.getClassID());
+            date.removeAll(date);
+            holder.itemObject.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(StudySituation.this);
+                    View mView = getLayoutInflater().inflate(R.layout.activity_study_situation, null);
 
-//            holder.itemObject.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(StudySituation.this,ListStudent.class);
-//                    intent.putExtra("classID", lop.getClassID());
-//                    intent.putExtra("className",lop.getLessonName());
-//                    intent.putExtra("classCount",Integer.toString(lop.getCount()));
-//                    startActivityForResult(intent, 1);
-//                }
-//            });
+                    TextView name = mView.findViewById(R.id.studentName);
+                    TextView numberAbsent = mView.findViewById(R.id.numberAbsent);
+                    TextView numberAbsented = mView.findViewById(R.id.numberAbsented);
+                    TextView note = mView.findViewById(R.id.note);
+                    String tam = Integer.toString(lop.getCount()*20/100);
+
+                    name.setText(takeName);
+                    numberAbsent.setText(tam);
+                    myRefAttendance.child(lop.getClassID()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            date.removeAll(date);
+                            long numDay = snapshot.getChildrenCount();
+                            for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                for(DataSnapshot dataSnapshotValue:dataSnapshot.getChildren())
+                                    if(dataSnapshotValue.getKey().equals(takeID) && dataSnapshotValue.getValue().equals("P")){
+                                        date.add(dataSnapshot.getKey());
+                                        numberAbsented.setText(String.valueOf(date.size()));
+                                        if(date.size()>lop.getCount()*20/100){
+                                            note.setVisibility(View.VISIBLE);
+                                        }else note.setVisibility(View.INVISIBLE);
+                                    }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    alert.setView(mView);
+                    AlertDialog alertDialog = alert.create();
+                    alertDialog.setCanceledOnTouchOutside(true);
+                    alertDialog.show();
+                }
+            });
         }
 
         @Override
@@ -135,4 +170,5 @@ public class StudySituation extends AppCompatActivity {
             itemObject = itemView.findViewById(R.id.itemObject);
         }
     }
+
 }

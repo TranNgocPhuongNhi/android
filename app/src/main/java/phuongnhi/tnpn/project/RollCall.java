@@ -75,8 +75,7 @@ public class RollCall extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RollCall.this, ListStudent.class);
-                startActivity(intent);
+                finish();
             }
         });
 

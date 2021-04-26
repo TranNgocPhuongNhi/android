@@ -86,8 +86,7 @@ public class Classroom extends AppCompatActivity {
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Classroom.this, TeacherHome.class);
-                startActivity(intent);
+                finish();
             }
         });
         btnAdd.setOnClickListener(new View.OnClickListener() {
