@@ -51,6 +51,7 @@ public class StudentHome extends AppCompatActivity {
     Uri imageUri;
     String myUri = "";
     String ID, fullname;
+    Users userProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class StudentHome extends AppCompatActivity {
         reference.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Users userProfile = snapshot.getValue(Users.class);
+                userProfile = snapshot.getValue(Users.class);
                 if(userProfile != null) {
                     fullname = userProfile.fullname;
                     img = userProfile.image;
@@ -173,32 +174,70 @@ public class StudentHome extends AppCompatActivity {
                                 alertDialog.show();
                                 break;
                             case R.id.changePassword:
-                                EditText changePassword = new EditText(StudentHome.this);
-                                AlertDialog.Builder changePasswordDialog = new AlertDialog.Builder(StudentHome.this);
-                                changePasswordDialog.setTitle("Đổi mật khẩu");
-                                changePasswordDialog.setMessage("Nhập mật khẩu mới ít nhất 6 ký tự");
-                                changePasswordDialog.setView(changePassword);
+                                AlertDialog.Builder changePassword = new AlertDialog.Builder(StudentHome.this);
+                                View view = getLayoutInflater().inflate(R.layout.update_password, null);
 
-                                changePasswordDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                EditText oldPassword = view.findViewById(R.id.text_oldpassword);
+                                EditText newPassword = view.findViewById(R.id.text_newpassword);
+                                EditText reNewPassword = view.findViewById(R.id.text_reNewpassword);
+                                Button exit = view.findViewById(R.id.exitChangePassword);
+                                Button change = view.findViewById(R.id.changePassword);
+
+                                changePassword.setView(view);
+
+                                AlertDialog alertDialog1 = changePassword.create();
+                                alertDialog1.setCanceledOnTouchOutside(false);
+
+                                exit.setOnClickListener(new View.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        String newPassword = changePassword.getText().toString();
-                                        user.updatePassword(newPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                reference.child(userID).child("password").setValue(newPassword);
-                                                Toast.makeText(StudentHome.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Toast.makeText(StudentHome.this, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
+                                    public void onClick(View v) {
+                                        alertDialog1.dismiss();
                                     }
                                 });
-                                changePasswordDialog.setNegativeButton("No", null);
-                                changePasswordDialog.show();
+
+                                change.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        String getNewPassword = newPassword.getText().toString();
+                                        String getOldPassword = oldPassword.getText().toString();
+                                        String getReNewPassword = reNewPassword.getText().toString();
+
+                                        if(!getOldPassword.equals(userProfile.getPassword())) {
+                                            oldPassword.setError("Nhập mật khẩu cũ không chính xác");
+                                            oldPassword.requestFocus();
+                                            return;
+                                        }
+                                        else if(getNewPassword.equals(userProfile.getPassword())) {
+                                            newPassword.setError("Mật khẩu mới trùng với mật khẩu cũ");
+                                            newPassword.requestFocus();
+                                            return;
+                                        }
+                                        else if(getNewPassword.length() < 6) {
+                                            newPassword.setError("Mật khẩu mới phải có ít nhất 6 ký tự");
+                                            newPassword.requestFocus();
+                                            return;                                        }
+                                        else if(!getReNewPassword.equals(getNewPassword)) {
+                                            reNewPassword.setError("Mật khẩu nhập lại không khớp.");
+                                            reNewPassword.requestFocus();
+                                            return;
+                                        }
+                                        else {
+                                            user.updatePassword(getNewPassword).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    reference.child(userID).child("password").setValue(getNewPassword);
+                                                    Toast.makeText(StudentHome.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(StudentHome.this, "Đổi mật khẩu thất bại", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                                alertDialog1.show();
                                 break;
                             case R.id.logout:
                                 FirebaseAuth.getInstance().signOut();
