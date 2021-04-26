@@ -22,16 +22,15 @@
             android:layout_gravity="center"/>
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/tenMonHoc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="DANH SÁCH HỌC VIÊN"
-            android:gravity="center"
             android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imageView6"
@@ -42,56 +41,64 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tenMonhoc"
+        android:id="@+id/txtDSMH"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:gravity="center"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="20sp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"/>
+        android:gravity="center"
+        android:text="DANH SÁCH HỌC VIÊN"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="right"
-        android:layout_marginRight="25dp">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Sĩ số: "
-            android:textSize="16sp"
-            android:textColor="@color/black"/>
-
-        <TextView
-            android:id="@+id/siSo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:textStyle="italic|bold"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/diemDanh"
+        android:id="@+id/linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Điểm danh"
-        android:textSize="18sp"
-        android:gravity="right"
-        android:layout_marginRight="25dp"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/blue_light"/>
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="25dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sĩ số: "
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/siSo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:textStyle="italic|bold" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/diemDanh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="right"
+            android:text="Điểm danh"
+            android:textColor="@color/blue_light"
+            android:textSize="18sp" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listStudent"
