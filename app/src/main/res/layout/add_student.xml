@@ -5,32 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        app:cardCornerRadius="50dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp">
-
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/no_face" />
-    </androidx.cardview.widget.CardView>
-
     <EditText
-        android:id="@+id/editTextTextPersonName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Họ tên"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp"/>
-
-    <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/txtID"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -38,66 +14,6 @@
         android:hint="Mã sinh viên"
         android:textColor="@color/blue_dark"
         android:paddingLeft="20dp" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Giới tính"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp"/>
-
-    <EditText
-        android:id="@+id/editTextTextPersonName4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Nơi sinh"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp"/>
-
-    <EditText
-        android:id="@+id/editTextTextPersonName5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Ngày sinh"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp"  />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Số điện thoại"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName7"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Số CMND"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp" />
-
-    <EditText
-        android:id="@+id/editTextTextPersonName8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:hint="Tên môn học"
-        android:textColor="@color/blue_dark"
-        android:paddingLeft="20dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -21,7 +21,6 @@
         <activity android:name=".StudySituation" />
         <activity android:name=".Notification" />
         <activity android:name=".RollCall" />
-        <activity android:name=".StudentGrade" />
         <activity android:name=".ListStudent" />
         <activity android:name=".Classroom" />
         <activity android:name=".StudentHome" />

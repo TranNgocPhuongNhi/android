@@ -3,131 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:padding="20dp"
     tools:context=".StudySituation">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@drawable/gradient_nav">
-
-        <ImageView
-            android:id="@+id/imageView11"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:srcCompat="@drawable/ic_baseline_chevron_left_24"
-            tools:ignore="VectorDrawableCompat"
-            android:layout_gravity="center"/>
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TÌNH HÌNH HỌC"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="18sp"/>
-
-    </LinearLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/imgStudent"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        app:cardCornerRadius="40dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="15dp">
-
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/no_face" />
-    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/studentName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Vương Nhất Bác"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
         android:textColor="@color/black"
-        android:gravity="center"/>
+        android:textSize="30sp"
+        android:textStyle="bold" />
 
     <androidx.gridlayout.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:columnCount="2"/>
+
+    <androidx.gridlayout.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         app:columnCount="2">
-
-        <TextView
-            android:id="@+id/soBuoi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Số buổi"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginLeft="40dp"/>
-
-    </androidx.gridlayout.widget.GridLayout>
-
-    <androidx.gridlayout.widget.GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:columnCount="2"
-        android:layout_marginLeft="20dp">
 
         <TextView
             android:id="@+id/absent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Được phép vắng"
-            android:textSize="18sp"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/numberAbsent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3"
+            android:layout_marginRight="100dp"
+            android:text="0"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            app:layout_gravity="right"
-            android:layout_marginRight="100dp"/>
+            app:layout_gravity="right" />
 
     </androidx.gridlayout.widget.GridLayout>
 
     <androidx.gridlayout.widget.GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:columnCount="2"
-        android:layout_marginLeft="20dp">
+        android:layout_marginLeft="20dp"
+        app:columnCount="2">
 
         <TextView
             android:id="@+id/absented"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Đã vắng"
-            android:textSize="18sp"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/numberAbsented"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2"
+            android:layout_marginRight="100dp"
+            android:text="0"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            app:layout_gravity="right"
-            android:layout_marginRight="100dp"/>
+            app:layout_gravity="right" />
 
     </androidx.gridlayout.widget.GridLayout>
 
@@ -136,11 +83,12 @@
         android:id="@+id/note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="chưa bị cấm thi"
-        android:textColor="#FF0000"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textAllCaps="true"
         android:layout_marginTop="20dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:text="Bạn đã bị cấm thi"
+        android:textAllCaps="true"
+        android:textColor="#FF0000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 </LinearLayout>
