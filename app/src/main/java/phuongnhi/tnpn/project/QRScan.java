@@ -71,7 +71,8 @@ public class QRScan extends AppCompatActivity{
                 String rs = result.getContents();
                 if (rs.equals(code)) {
                     myRef.child(takeID).setValue("A");
-                    txt.setText(takeDate+"\n"+takeClass+"\n"+takeID+"\n"+result.getContents());
+//                    txt.setText(takeDate+"\n"+takeClass+"\n"+takeID+"\n"+result.getContents());
+                    finish();
                 }
             }
             else {

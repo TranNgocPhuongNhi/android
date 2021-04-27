@@ -11,13 +11,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,10 +27,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Map;
+
+import static phuongnhi.tnpn.project.TeacherHome.getDayNow;
 
 public class ListStudent extends AppCompatActivity {
 
@@ -44,7 +42,7 @@ public class ListStudent extends AppCompatActivity {
     studentAdapter adapter;
     ArrayList<MyStudent> data;
 
-    String userID, takeID, datetime;
+    String userID, takeID;
     DatabaseReference myRef, myRefUser, myRefAttendance;
 
     int SELECT_PHOTO = 1;
@@ -58,19 +56,16 @@ public class ListStudent extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         userID  = user.getUid();
 
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        datetime = dateFormat.format(calendar.getTime());
         data = new ArrayList<MyStudent>();
 
-        btnBack = (ImageView) findViewById(R.id.imageView5);
-        btnAdd = (ImageView) findViewById(R.id.imageView6);
-        diemDanh = (TextView) findViewById(R.id.diemDanh);
+        btnBack = findViewById(R.id.imageView5);
+        btnAdd = findViewById(R.id.imageView6);
+        diemDanh = findViewById(R.id.diemDanh);
         qrCode = findViewById(R.id.qrCode);
         tenMH = findViewById(R.id.tenMonHoc);
         siso = findViewById(R.id.siSo);
 
-        recyclerView = (RecyclerView) findViewById(R.id.listStudent);
+        recyclerView = findViewById(R.id.listStudent);
         adapter = new studentAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
@@ -107,80 +102,56 @@ public class ListStudent extends AppCompatActivity {
             }
         });
 
-        diemDanh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ListStudent.this, RollCall.class);
-                intent.putExtra("classID", takeID);
-                startActivityForResult(intent, 1);
-            }
+        diemDanh.setOnClickListener(v -> {
+            Intent intent1 = new Intent(ListStudent.this, RollCall.class);
+            intent1.putExtra("classID", takeID);
+            startActivityForResult(intent1, 1);
         });
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+        btnBack.setOnClickListener(v -> finish());
+        qrCode.setOnClickListener(v -> {
+
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(ListStudent.this);
+            View mView = getLayoutInflater().inflate(R.layout.add_student, null);
+
+            Button btnCancel = mView.findViewById(R.id.thoatThem);
+            Button btnSave = mView.findViewById(R.id.luuThem);
+            EditText txtID = mView.findViewById(R.id.txtID);
+            String tam = "0ma1qr2code3nay4rat5dai6de7khoi8bi9biet10";
+            txtID.setText(tam);
+            alert.setView(mView);
+            AlertDialog alertDialog = alert.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            btnCancel.setOnClickListener(v1 -> {
+                myRefAttendance.child("Date: " + getDayNow()).child("CodeNow").removeValue();
+                alertDialog.dismiss();
+            });
+            btnSave.setOnClickListener(v12 -> {
+                for(MyStudent myStudent: data){
+                    myRefAttendance.child("Date: " + getDayNow()).child(myStudent.getIdUser()).setValue("P");
+                }
+                myRefAttendance.child("Date: " + getDayNow()).child("CodeNow").setValue(txtID.getText().toString());
+            });
+            alertDialog.show();
         });
-        qrCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(ListStudent.this);
-                View mView = getLayoutInflater().inflate(R.layout.add_student, null);
+        btnAdd.setOnClickListener(v -> {
+            AlertDialog.Builder alert = new AlertDialog.Builder(ListStudent.this);
+            View mView = getLayoutInflater().inflate(R.layout.add_student, null);
 
-                Button btnCancel = (Button) mView.findViewById(R.id.thoatThem);
-                Button btnSave = (Button) mView.findViewById(R.id.luuThem);
-                EditText txtID = mView.findViewById(R.id.txtID);
-                String tam = "0ma1qr2code3nay4rat5dai6de7khoi8bi9biet10";
-                txtID.setText(tam);
-                alert.setView(mView);
-                AlertDialog alertDialog = alert.create();
-                alertDialog.setCanceledOnTouchOutside(false);
-                btnCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        myRefAttendance.child("Date: " + datetime).child("CodeNow").removeValue();
-                        alertDialog.dismiss();
-                    }
-                });
-                btnSave.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        myRefAttendance.child("Date: " + datetime).child("CodeNow").setValue(txtID.getText().toString());
+            Button btnCancel = mView.findViewById(R.id.thoatThem);
+            Button btnSave = mView.findViewById(R.id.luuThem);
+            EditText txtID = mView.findViewById(R.id.txtID);
 
-                    }
-                });
-                alertDialog.show();
-            }
-        });
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(ListStudent.this);
-                View mView = getLayoutInflater().inflate(R.layout.add_student, null);
-
-                Button btnCancel = (Button) mView.findViewById(R.id.thoatThem);
-                Button btnSave = (Button) mView.findViewById(R.id.luuThem);
-                EditText txtID = mView.findViewById(R.id.txtID);
-
-                alert.setView(mView);
-                AlertDialog alertDialog = alert.create();
-                alertDialog.setCanceledOnTouchOutside(false);
-                btnCancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        alertDialog.dismiss();
-                    }
-                });
-                btnSave.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String ID_user = txtID.getText().toString();
-                        checkUser(ID_user);
-                        txtID.setText("");
-                    }
-                });
-                alertDialog.show();
-            }
+            alert.setView(mView);
+            AlertDialog alertDialog = alert.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+            btnCancel.setOnClickListener(v13 -> alertDialog.dismiss());
+            btnSave.setOnClickListener(v14 -> {
+                String ID_user = txtID.getText().toString();
+                checkUser(ID_user);
+                txtID.setText("");
+            });
+            alertDialog.show();
         });
     }
 
@@ -221,25 +192,19 @@ public class ListStudent extends AppCompatActivity {
         public void onBindViewHolder(@NonNull myStudentViewHolder holder, int position) {
             MyStudent myStudent = data.get(position);
             holder.nameStudent.setText(myStudent.getFullName());
-            holder.nameStudent.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    new AlertDialog.Builder(ListStudent.this)
-                        .setTitle("Bạn có chắc muốn xóa học viên khỏi lớp?")
-                        .setMessage(myStudent.getFullName()+"\nID: " + myStudent.getIdUser())
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                myRef.child("list_student").child(myStudent.getIdUser()).removeValue();
-                                myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).removeValue();
-                                data.remove(position);
-                                adapter.notifyDataSetChanged();
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
-                    return false;
-                }
+            holder.nameStudent.setOnLongClickListener(v -> {
+                new AlertDialog.Builder(ListStudent.this)
+                    .setTitle("Bạn có chắc muốn xóa học viên khỏi lớp?")
+                    .setMessage(myStudent.getFullName()+"\nID: " + myStudent.getIdUser())
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        myRef.child("list_student").child(myStudent.getIdUser()).removeValue();
+                        myRefAttendance.child("Date: " + getDayNow()).child(myStudent.getIdUser()).removeValue();
+                        data.remove(position);
+                        adapter.notifyDataSetChanged();
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+                return false;
             });
         }
         @Override

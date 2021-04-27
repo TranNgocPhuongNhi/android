@@ -35,6 +35,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -66,20 +68,15 @@ public class TeacherHome extends AppCompatActivity {
         reference = FirebaseDatabase.getInstance().getReference("Users");
         userID  = user.getUid();
 
-        classroom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TeacherHome.this, Classroom.class);
-                startActivity(intent);
-            }
+        classroom.setOnClickListener(v -> {
+            Intent intent = new Intent(TeacherHome.this, Classroom.class);
+            intent.putExtra("userID",userID);
+            startActivity(intent);
         });
 
-        chatWithStudent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TeacherHome.this, TeacherChat.class);
-                startActivity(intent);
-            }
+        chatWithStudent.setOnClickListener(v -> {
+            Intent intent = new Intent(TeacherHome.this, TeacherChat.class);
+            startActivity(intent);
         });
 
         reference.child(userID).addValueEventListener(new ValueEventListener() {
@@ -138,12 +135,7 @@ public class TeacherHome extends AppCompatActivity {
                                 });
                                 getImgInfo();
 
-                                btnCancel.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        alertDialog.dismiss();
-                                    }
-                                });
+                                btnCancel.setOnClickListener(v1 -> alertDialog.dismiss());
 
                                 btnSave.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -307,5 +299,10 @@ public class TeacherHome extends AppCompatActivity {
         chatWithStudent = (CardView) findViewById(R.id.chatWithStudent);
         nameofTeacher = (TextView) findViewById(R.id.nameofTeacher);
         imgView = (ImageView) findViewById(R.id.imgPersonTeacher);
+    }
+    public static String getDayNow() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(calendar.getTime());
     }
 }
