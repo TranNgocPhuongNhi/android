@@ -133,16 +133,20 @@ public class StudySituation extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             date.removeAll(date);
-                            long numDay = snapshot.getChildrenCount();
-                            for (DataSnapshot dataSnapshot:snapshot.getChildren()){
-                                for(DataSnapshot dataSnapshotValue:dataSnapshot.getChildren())
-                                    if(dataSnapshotValue.getKey().equals(takeID) && dataSnapshotValue.getValue().equals("P")){
-                                        date.add(dataSnapshot.getKey());
-                                        numberAbsented.setText(String.valueOf(date.size()));
-                                        if(date.size()>lop.getCount()*20/100){
-                                            note.setVisibility(View.VISIBLE);
-                                        }else note.setVisibility(View.INVISIBLE);
+                            for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                                    if(dataSnapshot1.getKey().equals(takeID)) {
+                                        for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
+                                            if(dataSnapshot2.getKey().equals(takeID) && dataSnapshot2.getValue().equals("A")){
+                                                date.add(dataSnapshot.getKey());
+                                                numberAbsented.setText(String.valueOf(date.size()));
+                                                if (date.size() > lop.getCount() * 20 / 100) {
+                                                    note.setVisibility(View.VISIBLE);
+                                                } else note.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
                                     }
+                                }
                             }
                         }
 
@@ -164,13 +168,13 @@ public class StudySituation extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             date.removeAll(date);
-                            long numDay = snapshot.getChildrenCount();
                             for (DataSnapshot dataSnapshot:snapshot.getChildren()){
                                 for(DataSnapshot dataSnapshotValue:dataSnapshot.getChildren())
                                     if(dataSnapshotValue.getKey().equals("CodeNow")){
                                         Intent intent = new Intent(StudySituation.this, QRScan.class);
                                         intent.putExtra("takeClass",lop.getClassID());
                                         intent.putExtra("takeID",takeID);
+                                        intent.putExtra("name", takeName);
                                         intent.putExtra("date", datetime);
                                         startActivity(intent);
                                     }
@@ -196,12 +200,14 @@ public class StudySituation extends AppCompatActivity {
     private class MyViewHolder extends RecyclerView.ViewHolder {
         TextView objectName, numOfPeople, classID ;
         View itemObject;
+        ImageView imageView;
         public MyViewHolder(View itemView) {
             super(itemView);
             objectName = itemView.findViewById(R.id.objectName);
             numOfPeople = itemView.findViewById(R.id.objectSize);
             classID = itemView.findViewById(R.id.objectID);
             itemObject = itemView.findViewById(R.id.itemObject);
+            itemView.findViewById(R.id.opMenu).setVisibility(View.INVISIBLE);
         }
     }
 

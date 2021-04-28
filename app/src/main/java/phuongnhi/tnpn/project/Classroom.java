@@ -131,10 +131,10 @@ public class Classroom extends AppCompatActivity {
                 intent.putExtra("classCount",Integer.toString(lop.getCount()));
                 startActivityForResult(intent, 1);
             });
-            holder.itemObject.setOnLongClickListener(new View.OnLongClickListener() {
+            holder.opMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    PopupMenu popupMenu = new PopupMenu(Classroom.this, holder.itemObject);
+                public void onClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(Classroom.this, holder.opMenu);
                     popupMenu.getMenuInflater().inflate(R.menu.options_menu_student, popupMenu.getMenu());
                     popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         @Override
@@ -205,7 +205,6 @@ public class Classroom extends AppCompatActivity {
                         }
                     });
                     popupMenu.show();
-                    return false;
                 }
             });
         }
@@ -219,12 +218,14 @@ public class Classroom extends AppCompatActivity {
     private static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView objectName, numOfPeople, classID ;
         View itemObject;
+        ImageView opMenu;
         public MyViewHolder(View itemView) {
             super(itemView);
             objectName = itemView.findViewById(R.id.objectName);
             numOfPeople = itemView.findViewById(R.id.objectSize);
             classID = itemView.findViewById(R.id.objectID);
             itemObject = itemView.findViewById(R.id.itemObject);
+            opMenu = itemView.findViewById(R.id.opMenu);
         }
     }
 }

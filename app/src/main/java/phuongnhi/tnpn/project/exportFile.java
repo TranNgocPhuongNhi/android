@@ -47,7 +47,6 @@ public class exportFile extends AppCompatActivity {
     ArrayAdapter adapter;
     File filePath = new File(Environment.getExternalStorageDirectory() + "/CamThi.xls");
 
-    Map map;
     List<String> date= new ArrayList<String>();
     String classID;
 
@@ -59,45 +58,43 @@ public class exportFile extends AppCompatActivity {
         btnExport = findViewById(R.id.btnExport);
         listView = findViewById(R.id.listView);
 
-
         Intent intent = getIntent();
         classID = intent.getStringExtra("classID");
 
-
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
-
-        mData = FirebaseDatabase.getInstance().getReference("Attendance").child(classID);
 
         dsCamThi = new ArrayList<String>();
         adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, dsCamThi);
         listView.setAdapter(adapter);
 
-
+        mData = FirebaseDatabase.getInstance().getReference("Attendance").child(classID);
         myRef = FirebaseDatabase.getInstance().getReference("Class").child(classID).child("list_student");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    map = (Map) dataSnapshot.getValue();
-                    Toast.makeText(exportFile.this, map.get("fullname").toString(), Toast.LENGTH_SHORT).show();
+                    Map map = (Map) dataSnapshot.getValue();
+                    String idUser = map.get("idUser").toString();
                     mData.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            date.remove(date);
-                            for (DataSnapshot dataSnapshot:snapshot.getChildren()){
-                                for(DataSnapshot dataSnapshotValue:dataSnapshot.getChildren()) {
-                                    if (dataSnapshotValue.getKey().equals(map.get("idUser").toString()) && dataSnapshotValue.getValue().equals("P")) {
-//                                        Toast.makeText(exportFile.this, dataSnapshotValue.getKey(), Toast.LENGTH_SHORT).show();
-                                        date.add(dataSnapshot.getKey());
-
+                            date.removeAll(date);
+                            for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                                    if(dataSnapshot1.getKey().equals(idUser)) {
+                                        for (DataSnapshot dataSnapshot2 : dataSnapshot1.getChildren()) {
+                                            if(dataSnapshot2.getKey().equals(idUser) && dataSnapshot2.getValue().equals("A")){
+                                                date.add(dataSnapshot.getKey());
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            Toast.makeText(exportFile.this, String.valueOf(date.size()), Toast.LENGTH_SHORT).show();
-//                            SinhVien sinhVien = new SinhVien(map.get("fullname").toString(),map.get("idUser").toString(),classID,null);
-//                            dsCamThi.add(sinhVien.getName()+"\n"+sinhVien.getId()+"\n"+ sinhVien.getMonHoc()+"\n"+sinhVien.getnApsent());
+                            SinhVien sinhVien = new SinhVien(map.get("fullname").toString(),map.get("idUser").toString(),classID,date.size());
+                            dsCamThi.add(sinhVien.getName()+"\n"+sinhVien.getId()+"\n"+ sinhVien.getMonHoc()+"\n"+sinhVien.getnApsent());
+                            adapter.notifyDataSetChanged();
                         }
 
                         @Override
@@ -106,17 +103,12 @@ public class exportFile extends AppCompatActivity {
                         }
                     });
                 }
-                adapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-
-
-
 
 //        SinhVien sv = new SinhVien("Nguyen Dai Hiep", "51900691","Web", 5);
         //mData.child("SinhVien").push().setValue(sv);

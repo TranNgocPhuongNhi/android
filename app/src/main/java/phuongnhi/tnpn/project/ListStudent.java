@@ -114,21 +114,25 @@ public class ListStudent extends AppCompatActivity {
             AlertDialog.Builder alert = new AlertDialog.Builder(ListStudent.this);
             View mView = getLayoutInflater().inflate(R.layout.add_student, null);
 
+            TextView textView = mView.findViewById(R.id.txtID);
+            textView.setHint("enter QR code here");
             Button btnCancel = mView.findViewById(R.id.thoatThem);
             Button btnSave = mView.findViewById(R.id.luuThem);
+            btnSave.setText("Tạo code");
             EditText txtID = mView.findViewById(R.id.txtID);
-            String tam = "0ma1qr2code3nay4rat5dai6de7khoi8bi9biet10";
+            String tam = "0ma1qr2code3nay4rat5dai6de7khoi8bi9biet10"; //code nhập sẵn
             txtID.setText(tam);
             alert.setView(mView);
             AlertDialog alertDialog = alert.create();
-            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.setCanceledOnTouchOutside(true);
             btnCancel.setOnClickListener(v1 -> {
                 myRefAttendance.child("Date: " + getDayNow()).child("CodeNow").removeValue();
                 alertDialog.dismiss();
             });
             btnSave.setOnClickListener(v12 -> {
                 for(MyStudent myStudent: data){
-                    myRefAttendance.child("Date: " + getDayNow()).child(myStudent.getIdUser()).setValue("P");
+                    myRefAttendance.child("Date: " + getDayNow()).child(myStudent.getIdUser()).child(myStudent.getIdUser()).setValue("A");
+                    myRefAttendance.child("Date: " + getDayNow()).child(myStudent.getIdUser()).child("fullName").setValue(myStudent.getFullName());
                 }
                 myRefAttendance.child("Date: " + getDayNow()).child("CodeNow").setValue(txtID.getText().toString());
             });
