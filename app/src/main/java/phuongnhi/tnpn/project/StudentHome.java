@@ -1,13 +1,7 @@
 package phuongnhi.tnpn.project;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +13,11 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,7 +40,7 @@ public class StudentHome extends AppCompatActivity {
 
     CardView notification, statusLearn, chatWithTeacher;
     ImageView optionsMenu, imgView, imgEdit;
-    TextView nameofStudent, btnEditImg;
+    TextView nameofStudent, btnEditImg, mssv;
     DatabaseReference reference;
     FirebaseUser user;
     FirebaseStorage storage;
@@ -102,6 +101,7 @@ public class StudentHome extends AppCompatActivity {
                     img = userProfile.image;
                     ID = userProfile.getIdUser();
                     nameofStudent.setText(fullname);
+                    mssv.setText(ID);
                     // Lấy hình gán vào dùng thư viện Picasso
                     Picasso.with(StudentHome.this).load(img).into(imgView);
                 }
@@ -320,6 +320,7 @@ public class StudentHome extends AppCompatActivity {
         statusLearn = (CardView) findViewById(R.id.statusLearn);
         chatWithTeacher = (CardView) findViewById(R.id.chatWithTeacher);
         nameofStudent = (TextView) findViewById(R.id.nameofStudent);
+        mssv = (TextView) findViewById(R.id.maHocSinh);
         imgView = (ImageView) findViewById(R.id.imgPerson);
     }
 }

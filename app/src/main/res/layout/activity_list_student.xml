@@ -87,16 +87,35 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/diemDanh"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="25dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="right"
-            android:text="Điểm danh"
-            android:textColor="@color/blue_light"
-            android:textSize="18sp" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/diemDanh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Điểm danh"
+                android:textColor="#05E4CB"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/qrCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="10dp"
+                android:layout_weight="1"
+                android:text="Tạo QR code"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="#4CDC0F" />
+        </LinearLayout>
 
     </LinearLayout>
 
