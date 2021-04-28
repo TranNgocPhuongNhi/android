@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-<<<<<<< HEAD
     <item android:title="Xuất file Excel"
         android:id="@+id/exportFile"/>
-=======
-    <item android:title="Xuất file excel"
-        android:id="@+id/xuatfile"/>
->>>>>>> main
     <item android:title="Chỉnh sửa"
         android:id="@+id/editOp"/>
     <item android:title="Xóa"
