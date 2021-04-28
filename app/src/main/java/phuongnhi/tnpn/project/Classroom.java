@@ -6,11 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -129,7 +131,6 @@ public class Classroom extends AppCompatActivity {
                 intent.putExtra("classCount",Integer.toString(lop.getCount()));
                 startActivityForResult(intent, 1);
             });
-<<<<<<< HEAD
             holder.itemObject.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -204,63 +205,8 @@ public class Classroom extends AppCompatActivity {
                         }
                     });
                     popupMenu.show();
-=======
-            holder.itemObject.setOnLongClickListener(v -> {
-                PopupMenu popupMenu = new PopupMenu(Classroom.this, holder.itemObject);
-                popupMenu.getMenuInflater().inflate(R.menu.options_menu_student, popupMenu.getMenu());
-                popupMenu.setOnMenuItemClickListener(item -> {
-                    switch(item.getItemId()) {
-                        case  R.id.xuatfile:
-
-                        case  R.id.editOp:
-                            AlertDialog.Builder alert = new AlertDialog.Builder(Classroom.this);
-                            View mView = getLayoutInflater().inflate(R.layout.add_class, null);
-
-                            EditText txt1 = mView.findViewById(R.id.className);
-                            EditText txt2 = mView.findViewById(R.id.classSize);
-                            EditText txt3 = mView.findViewById(R.id.classID);
-
-                            txt3.setEnabled(false);
-                            txt3.setTextColor(Color.GRAY);
-                            txt3.setGravity(Gravity.CENTER);
-                            txt1.setText(lop.getLessonName());
-                            txt2.setText(Integer.toString(lop.getCount()));
-                            txt3.setText(lop.getClassID());
-                            Button btnCancel = mView.findViewById(R.id.button3);
-                            Button btnSave = mView.findViewById(R.id.button4);
-
-                            alert.setView(mView);
-                            AlertDialog alertDialog = alert.create();
-                            alertDialog.setCanceledOnTouchOutside(false);
-                            btnCancel.setOnClickListener(v1 -> alertDialog.dismiss());
-                            btnSave.setOnClickListener(v1 -> {
-                                Map<String, Object> updateClass = new HashMap<>();
-                                updateClass.put("lessonName", txt1.getText().toString());
-                                updateClass.put("classID", txt3.getText().toString());
-                                updateClass.put("count", Integer.parseInt(txt2.getText().toString()));
-
-                                myRef.child(lop.getClassID()).updateChildren(updateClass);
-                                alertDialog.dismiss();
-                            });
-                            alertDialog.show();
-                            break;
-                        case R.id.deleteOp:
-                            new AlertDialog.Builder(Classroom.this)
-                                    .setTitle("Bạn có chắc muốn xóa lớp học này?")
-                                    .setMessage(lop.getLessonName()+"\nID: " + lop.getClassID())
-                                    .setPositiveButton("Yes", (dialog, which) -> {
-                                        myRef.child(lop.getClassID()).removeValue();
-                                        arrayList.remove(position);
-                                        adapter.notifyDataSetChanged();
-                                    })
-                                    .setNegativeButton("No", null).show();
-                            break;
-                    }
->>>>>>> main
                     return false;
-                });
-                popupMenu.show();
-                return false;
+                }
             });
         }
 
