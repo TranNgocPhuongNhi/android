@@ -129,6 +129,82 @@ public class Classroom extends AppCompatActivity {
                 intent.putExtra("classCount",Integer.toString(lop.getCount()));
                 startActivityForResult(intent, 1);
             });
+<<<<<<< HEAD
+            holder.itemObject.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    PopupMenu popupMenu = new PopupMenu(Classroom.this, holder.itemObject);
+                    popupMenu.getMenuInflater().inflate(R.menu.options_menu_student, popupMenu.getMenu());
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch(item.getItemId()) {
+                                case R.id.exportFile:
+                                    Intent intent = new Intent(Classroom.this, exportFile.class);
+                                    intent.putExtra("classID",lop.getClassID());
+
+                                    startActivity(intent);
+                                    break;
+                                case  R.id.editOp:
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(Classroom.this);
+                                    View mView = getLayoutInflater().inflate(R.layout.add_class, null);
+
+                                    EditText txt1 = mView.findViewById(R.id.className);
+                                    EditText txt2 = mView.findViewById(R.id.classSize);
+                                    EditText txt3 = mView.findViewById(R.id.classID);
+
+                                    txt3.setEnabled(false);
+                                    txt3.setTextColor(Color.GRAY);
+                                    txt3.setGravity(Gravity.CENTER);
+                                    txt1.setText(lop.getLessonName());
+                                    txt2.setText(Integer.toString(lop.getCount()));
+                                    txt3.setText(lop.getClassID());
+                                    Button btnCancel = (Button) mView.findViewById(R.id.button3);
+                                    Button btnSave = (Button) mView.findViewById(R.id.button4);
+
+                                    alert.setView(mView);
+                                    AlertDialog alertDialog = alert.create();
+                                    alertDialog.setCanceledOnTouchOutside(false);
+                                    btnCancel.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            alertDialog.dismiss();
+                                        }
+                                    });
+                                    btnSave.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Map<String, Object> updateClass = new HashMap<String, Object>();
+                                            updateClass.put("lessonName", txt1.getText().toString());
+                                            updateClass.put("classID", txt3.getText().toString());
+                                            updateClass.put("count", Integer.parseInt(txt2.getText().toString()));
+
+                                            myRef.child(lop.getClassID()).updateChildren(updateClass);
+                                            alertDialog.dismiss();
+                                        }
+                                    });
+                                    alertDialog.show();
+                                    break;
+                                case R.id.deleteOp:
+                                    new AlertDialog.Builder(Classroom.this)
+                                            .setTitle("Bạn có chắc muốn xóa lớp học này?")
+                                            .setMessage(lop.getLessonName()+"\nID: " + lop.getClassID())
+                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    myRef.child(lop.getClassID()).removeValue();
+                                                    arrayList.remove(position);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+                                            })
+                                            .setNegativeButton("No", null).show();
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    popupMenu.show();
+=======
             holder.itemObject.setOnLongClickListener(v -> {
                 PopupMenu popupMenu = new PopupMenu(Classroom.this, holder.itemObject);
                 popupMenu.getMenuInflater().inflate(R.menu.options_menu_student, popupMenu.getMenu());
@@ -180,6 +256,7 @@ public class Classroom extends AppCompatActivity {
                                     .setNegativeButton("No", null).show();
                             break;
                     }
+>>>>>>> main
                     return false;
                 });
                 popupMenu.show();
