@@ -55,6 +55,15 @@
             android:textSize="20dp"
             android:textStyle="bold"/>
 
+        <TextView
+            android:id="@+id/maHocSinh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên người dùng"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="18dp"/>
+
     </LinearLayout>
 
     <LinearLayout
