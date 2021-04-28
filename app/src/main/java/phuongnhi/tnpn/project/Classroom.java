@@ -164,6 +164,12 @@ public class Classroom extends AppCompatActivity {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch(item.getItemId()) {
+                                case R.id.exportFile:
+                                    Intent intent = new Intent(Classroom.this, exportFile.class);
+                                    intent.putExtra("classID",lop.getClassID());
+
+                                    startActivity(intent);
+                                    break;
                                 case  R.id.editOp:
                                     AlertDialog.Builder alert = new AlertDialog.Builder(Classroom.this);
                                     View mView = getLayoutInflater().inflate(R.layout.add_class, null);
