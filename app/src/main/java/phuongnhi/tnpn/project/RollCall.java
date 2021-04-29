@@ -132,11 +132,13 @@ public class RollCall extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }
             });
-            String check="P";
+            String check="A";
             if (status.get(position)) {
-                check = "A";
+                check = "P";
             }
-            myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).setValue(check);
+            myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).child(myStudent.getIdUser()).setValue(check);
+            myRefAttendance.child("Date: " + datetime).child(myStudent.getIdUser()).child("fullName").setValue(myStudent.getFullName());
+
         }
         @Override
         public int getItemCount() {

@@ -26,7 +26,7 @@ public class QRScan extends AppCompatActivity{
     TextView txt;
 
     DatabaseReference myRef, myRefAttendance;
-    String takeID, takeClass, takeDate, code;
+    String takeID, takeClass, takeDate, code, takeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +49,7 @@ public class QRScan extends AppCompatActivity{
         Intent intent = getIntent();
         takeID = intent.getStringExtra("takeID");
         takeClass = intent.getStringExtra("takeClass");
+        takeName = intent.getStringExtra("name");
         takeDate = intent.getStringExtra("date");
         myRef = FirebaseDatabase.getInstance().getReference("Attendance").child(takeClass).child(takeDate);
         myRef.child("CodeNow").addValueEventListener(new ValueEventListener() {
@@ -70,7 +71,8 @@ public class QRScan extends AppCompatActivity{
                 txt.setText("");
                 String rs = result.getContents();
                 if (rs.equals(code)) {
-                    myRef.child(takeID).setValue("A");
+                    myRef.child(takeID).child(takeID).setValue("A");
+                    myRef.child(takeID).child("fullName").setValue(takeName);
 //                    txt.setText(takeDate+"\n"+takeClass+"\n"+takeID+"\n"+result.getContents());
                     finish();
                 }
