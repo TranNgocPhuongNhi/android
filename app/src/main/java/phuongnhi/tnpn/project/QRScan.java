@@ -10,16 +10,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.journeyapps.barcodescanner.CaptureActivity;
 
 public class QRScan extends AppCompatActivity{
     Button btn;
@@ -71,7 +68,7 @@ public class QRScan extends AppCompatActivity{
                 txt.setText("");
                 String rs = result.getContents();
                 if (rs.equals(code)) {
-                    myRef.child(takeID).child(takeID).setValue("A");
+                    myRef.child(takeID).child(takeID).setValue("P");
                     myRef.child(takeID).child("fullName").setValue(takeName);
 //                    txt.setText(takeDate+"\n"+takeClass+"\n"+takeID+"\n"+result.getContents());
                     finish();
