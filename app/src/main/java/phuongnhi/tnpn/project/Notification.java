@@ -40,18 +40,12 @@ public class Notification extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Notification.this, StudentHome.class);
-                startActivity(intent);
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
     }
 
     private void getData() {
         data = new ArrayList<>();
-        for(int i=1; i<=50; i++) {
+        for(int i=1; i<=5; i++) {
             data.add("Item " + i);
         }
     }

@@ -141,8 +141,14 @@ public class StudySituation extends AppCompatActivity {
                                                 date.add(dataSnapshot.getKey());
                                                 numberAbsented.setText(String.valueOf(date.size()));
                                                 if (date.size() > lop.getCount() * 20 / 100) {
+                                                    note.setText("Bạn bị cấm thi !!!!");
+                                                    note.setTextColor(getResources().getColor(R.color.red));
                                                     note.setVisibility(View.VISIBLE);
-                                                } else note.setVisibility(View.INVISIBLE);
+                                                } else if(date.size() == lop.getCount() * 20 / 100){
+                                                    note.setText("Bạn sắp bị cấm thi !!!!");
+                                                    note.setTextColor(getResources().getColor(R.color.yellow));
+                                                    note.setVisibility(View.VISIBLE);
+                                                }else note.setVisibility(View.INVISIBLE);
                                             }
                                         }
                                     }

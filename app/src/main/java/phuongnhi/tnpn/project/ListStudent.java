@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -57,6 +57,8 @@ public class ListStudent extends AppCompatActivity {
         userID  = user.getUid();
 
         data = new ArrayList<MyStudent>();
+
+        FirebaseMessaging.getInstance().subscribeToTopic("all");
 
         btnBack = findViewById(R.id.imageView5);
         btnAdd = findViewById(R.id.imageView6);
@@ -128,6 +130,18 @@ public class ListStudent extends AppCompatActivity {
             btnCancel.setOnClickListener(v1 -> {
                 myRefAttendance.child("Date: " + getDayNow()).child("CodeNow").removeValue();
                 alertDialog.dismiss();
+
+                String title = "Thông báo vắng học";
+                String msg = "Bạn có thông báo mới về lớp học";
+                //send notification
+                FcmNotificationsSender notificationsSender = new FcmNotificationsSender(
+                        "/topics/all",
+                        title,
+                        msg,
+                        getApplicationContext(),
+                        ListStudent.this);
+
+                notificationsSender.SendNotifications();
             });
             btnSave.setOnClickListener(v12 -> {
                 for(MyStudent myStudent: data){

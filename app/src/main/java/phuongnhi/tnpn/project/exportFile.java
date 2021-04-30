@@ -44,8 +44,10 @@ public class exportFile extends AppCompatActivity {
     ListView listView;
     Button btnExport;
     ArrayList<String> dsCamThi;
+    ArrayList<SinhVien> dsCT = new ArrayList<>();
+
     ArrayAdapter adapter;
-    File filePath = new File(Environment.getExternalStorageDirectory() + "/CamThi.xls");
+    File filePath ;
 
     List<String> date= new ArrayList<String>();
     String classID;
@@ -61,6 +63,7 @@ public class exportFile extends AppCompatActivity {
         Intent intent = getIntent();
         classID = intent.getStringExtra("classID");
 
+        filePath = new File(Environment.getExternalStorageDirectory() + "/CamThi"+classID+".xls");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
@@ -93,6 +96,7 @@ public class exportFile extends AppCompatActivity {
                                 }
                             }
                             SinhVien sinhVien = new SinhVien(map.get("fullname").toString(),map.get("idUser").toString(),classID,date.size());
+                            dsCT.add(sinhVien);
                             dsCamThi.add(sinhVien.getName()+"\n"+sinhVien.getId()+"\n"+ sinhVien.getMonHoc()+"\n"+sinhVien.getnApsent());
                             adapter.notifyDataSetChanged();
                         }
@@ -110,108 +114,70 @@ public class exportFile extends AppCompatActivity {
             }
         });
 
-//        SinhVien sv = new SinhVien("Nguyen Dai Hiep", "51900691","Web", 5);
-        //mData.child("SinhVien").push().setValue(sv);
+        btnExport.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+                HSSFSheet hssfSheet = hssfWorkbook.createSheet("Danh Sach Cam Thi");
 
-//        String name, String id, String monHoc, Integer nApsent
-//        mData.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-//                    SinhVien st = dataSnapshot.getValue(SinhVien.class);
-//                    if (st.nApsent >= 4) {
-//                        dsCamThi.add("Name: " + st.name + "\n ID:" + st.id + "\n Subject: " + st.monHoc + "\n Apsent: " + st.nApsent);
-//                    }
-//                }
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//        btnExport.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mData.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
-//                        HSSFSheet hssfSheet = hssfWorkbook.createSheet("Danh Sach Cam Thi");
-//
-//                        hssfSheet.setColumnWidth(0, (5000));
-//                        hssfSheet.setColumnWidth(1, (3000));
-//                        hssfSheet.setColumnWidth(2, (3000));
-//                        hssfSheet.setColumnWidth(3, (3000));
-//
-//                        HSSFRow hssfRow = hssfSheet.createRow(0);
-//                        HSSFCell hssfCell = hssfRow.createCell(0);
-//                        hssfCell.setCellValue("Họ và Tên");
-//                        hssfCell = hssfRow.createCell(1);
-//                        hssfCell.setCellValue("MSSV");
-//                        hssfCell = hssfRow.createCell(2);
-//                        hssfCell.setCellValue("Môn học");
-//                        hssfCell = hssfRow.createCell(3);
-//                        hssfCell.setCellValue("Số ngày vắng");
-//
-//
-//                        ArrayList<SinhVien> dsSinhVien = new ArrayList<SinhVien>();
-//                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-//                            SinhVien st = dataSnapshot.getValue(SinhVien.class);
-//                            if (st.nApsent >= 4) {
-//                                dsSinhVien.add(st);
-//                            }
-//                        }
-//
-//
-//                        int numRow = 1;
-//                        for (SinhVien sv : dsSinhVien) {
-//                            hssfRow = hssfSheet.createRow(numRow);
-//                            int numCol = 0;
-//                            while (numCol < 4) {
-//                                hssfCell = hssfRow.createCell(numCol);
-//                                if (numCol == 0)
-//                                    hssfCell.setCellValue(sv.getName());
-//                                if (numCol == 1)
-//                                    hssfCell.setCellValue(sv.getId());
-//                                if (numCol == 2)
-//                                    hssfCell.setCellValue(sv.getMonHoc());
-//                                if (numCol == 3)
-//                                    hssfCell.setCellValue(sv.getnApsent());
-//                                numCol++;
-//                            }
-//                            numRow += 1;
-//                        }
-//
-//                        try {
-//                            if (!filePath.exists()) {
-//                                filePath.createNewFile();
-//                            }
-//
-//                            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-//
-//                            hssfWorkbook.write(fileOutputStream);
-//                            Toast.makeText(exportFile.this, "Export Success", Toast.LENGTH_SHORT).show();
-//                            if (fileOutputStream != null) {
-//                                fileOutputStream.flush();
-//                                fileOutputStream.close();
-//                            }
-//                        } catch (Exception e) {
-//                            Toast.makeText(exportFile.this, "Export Failed", Toast.LENGTH_SHORT).show();
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
-//            }
-//        });
+                hssfSheet.setColumnWidth(0, (5000));
+                hssfSheet.setColumnWidth(1, (3000));
+                hssfSheet.setColumnWidth(2, (3000));
+                hssfSheet.setColumnWidth(3, (3000));
+
+                HSSFRow hssfRow = hssfSheet.createRow(0);
+                HSSFCell hssfCell = hssfRow.createCell(0);
+                hssfCell.setCellValue("Họ và Tên");
+                hssfCell = hssfRow.createCell(1);
+                hssfCell.setCellValue("MSSV");
+                hssfCell = hssfRow.createCell(2);
+                hssfCell.setCellValue("Môn học");
+                hssfCell = hssfRow.createCell(3);
+                hssfCell.setCellValue("Số ngày vắng");
+
+                // Add dữ liệu
+                int numRow = 1;
+                for (SinhVien sv : dsCT) {
+                    hssfRow = hssfSheet.createRow(numRow);
+                    int numCol = 0;
+                    while (numCol < 4) {
+                        hssfCell = hssfRow.createCell(numCol);
+                        if (numCol == 0)
+                            hssfCell.setCellValue(sv.getName());
+                        if (numCol == 1)
+                            hssfCell.setCellValue(sv.getId());
+                        if (numCol == 2)
+                            hssfCell.setCellValue(sv.getMonHoc());
+                        if (numCol == 3)
+                            hssfCell.setCellValue(sv.getnApsent());
+                        numCol++;
+                    }
+                    numRow += 1;
+                }
+
+                // Xuất File
+                try {
+                    if (!filePath.exists()) {
+                        filePath.createNewFile();
+                    }
+
+                    FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+
+                    hssfWorkbook.write(fileOutputStream);
+                    Toast.makeText(exportFile.this, "Export Success", Toast.LENGTH_SHORT).show();
+                    if (fileOutputStream != null) {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(exportFile.this, "Export Failed", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
-    public class SinhVien {
+    public static class SinhVien {
         public String name;
         public String id;
         public String monHoc;

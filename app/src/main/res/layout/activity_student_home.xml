@@ -81,46 +81,6 @@
             app:columnOrderPreserved="false"
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/notification"
-                android:layout_width="120dp"
-                android:layout_height="150dp"
-                android:layout_margin="20dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="12dp"
-                app:layout_columnWeight="1"
-                app:layout_rowWeight="1">
-
-                <ImageView
-                    android:id="@+id/newNotification"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="right"
-                    app:srcCompat="@drawable/importance" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:src="@drawable/ic_baseline_notifications_24" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:gravity="center"
-                        android:text="Thông báo"
-                        android:textColor="#6f6f6f"
-                        android:textSize="18sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
                 android:id="@+id/statusLearn"
                 android:layout_width="120dp"
                 android:layout_height="150dp"

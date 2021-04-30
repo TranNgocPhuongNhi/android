@@ -32,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 
 public class RollCall extends AppCompatActivity {
@@ -69,18 +70,31 @@ public class RollCall extends AppCompatActivity {
         btnAdd = findViewById(R.id.imageView6);
         btnAdd.setVisibility(View.INVISIBLE);
 
+
         Intent intent = getIntent();
         String takeID = intent.getStringExtra("classID");
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
         myRefAttendance = FirebaseDatabase.getInstance().getReference("Attendance").child(takeID);
         myRef = FirebaseDatabase.getInstance().getReference("Class").child(takeID);
+
+        btnBack.setOnClickListener(v -> {
+
+            String title = "Thông báo vắng học";
+            String msg = "Bạn có thông báo mới về lớp học";
+            //send notification
+            FcmNotificationsSender notificationsSender = new FcmNotificationsSender(
+                    "/topics/all",
+                    title,
+                    msg,
+                    getApplicationContext(),
+                    RollCall.this);
+
+            notificationsSender.SendNotifications();
+
+            finish();
+        });
+
+
 
         recyclerView = (RecyclerView) findViewById(R.id.listStudent);
         adapter = new studentAdapter();
