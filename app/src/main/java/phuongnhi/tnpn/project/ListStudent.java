@@ -1,10 +1,5 @@
 package phuongnhi.tnpn.project;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +12,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -126,7 +126,7 @@ public class ListStudent extends AppCompatActivity {
             txtID.setText(tam);
             alert.setView(mView);
             AlertDialog alertDialog = alert.create();
-            alertDialog.setCanceledOnTouchOutside(true);
+            alertDialog.setCanceledOnTouchOutside(false);
             btnCancel.setOnClickListener(v1 -> {
                 myRefAttendance.child("Date: " + getDayNow()).child("CodeNow").removeValue();
                 alertDialog.dismiss();
