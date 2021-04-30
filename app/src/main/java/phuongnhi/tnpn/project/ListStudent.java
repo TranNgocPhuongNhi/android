@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -132,9 +131,8 @@ public class ListStudent extends AppCompatActivity {
                 myRefAttendance.child("Date: " + getDayNow()).child("CodeNow").removeValue();
                 alertDialog.dismiss();
 
-
                 String title = "Thông báo vắng học";
-                String msg = "Bạn đã bị cấm thi";
+                String msg = "Bạn có thông báo mới về lớp học";
                 //send notification
                 FcmNotificationsSender notificationsSender = new FcmNotificationsSender(
                         "/topics/all",

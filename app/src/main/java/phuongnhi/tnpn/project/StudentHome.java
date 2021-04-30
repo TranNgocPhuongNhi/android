@@ -38,7 +38,7 @@ import java.util.UUID;
 
 public class StudentHome extends AppCompatActivity {
 
-    CardView notification, statusLearn, chatWithTeacher;
+    CardView statusLearn, chatWithTeacher;
     ImageView optionsMenu, imgView, imgEdit;
     TextView nameofStudent, btnEditImg, mssv;
     DatabaseReference reference;
@@ -65,13 +65,6 @@ public class StudentHome extends AppCompatActivity {
         reference = FirebaseDatabase.getInstance().getReference("Users");
         userID  = user.getUid();
 
-        notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(StudentHome.this, Notification.class);
-                startActivity(intent);
-            }
-        });
 
         statusLearn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,7 +309,6 @@ public class StudentHome extends AppCompatActivity {
 
     private void AnhXa() {
         optionsMenu = (ImageView) findViewById(R.id.optionsMenu);
-        notification = (CardView) findViewById(R.id.notification);
         statusLearn = (CardView) findViewById(R.id.statusLearn);
         chatWithTeacher = (CardView) findViewById(R.id.chatWithTeacher);
         nameofStudent = (TextView) findViewById(R.id.nameofStudent);

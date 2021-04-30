@@ -177,7 +177,7 @@ public class exportFile extends AppCompatActivity {
         });
 
     }
-    public class SinhVien {
+    public static class SinhVien {
         public String name;
         public String id;
         public String monHoc;
