@@ -126,6 +126,10 @@ public class StudySituation extends AppCompatActivity {
                     TextView numberAbsented = mView.findViewById(R.id.numberAbsented);
                     TextView note = mView.findViewById(R.id.note);
                     String tam = Integer.toString(lop.getCount()*20/100);
+                    Integer temp = lop.getCount()*20/100;
+
+                    /*Intent intent = new Intent(StudySituation.this, exportFile.class );
+                    intent.putExtra("DuocPhepVang",temp);*/
 
                     name.setText(takeName);
                     numberAbsent.setText(tam);

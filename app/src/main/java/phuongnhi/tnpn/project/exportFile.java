@@ -2,12 +2,16 @@ package phuongnhi.tnpn.project;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -42,7 +46,7 @@ public class exportFile extends AppCompatActivity {
 
     DatabaseReference mData, myRef;
     ListView listView;
-    Button btnExport;
+    Button btnExport, btnPDF;
     ArrayList<String> dsCamThi;
     ArrayList<SinhVien> dsCT = new ArrayList<>();
 
@@ -51,6 +55,7 @@ public class exportFile extends AppCompatActivity {
 
     List<String> date= new ArrayList<String>();
     String classID;
+    Integer temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +64,13 @@ public class exportFile extends AppCompatActivity {
 
         btnExport = findViewById(R.id.btnExport);
         listView = findViewById(R.id.listView);
+        btnPDF = findViewById(R.id.btnPDF);
 
         Intent intent = getIntent();
         classID = intent.getStringExtra("classID");
+//        temp = intent.getIntExtra("DuocPhepVang",temp);
 
-        filePath = new File(Environment.getExternalStorageDirectory() + "/CamThi"+classID+".xls");
+        filePath = new File(Environment.getExternalStorageDirectory() + "/Danh Sách Cấm Thi Lớp "+classID+".xls");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE}, PackageManager.PERMISSION_GRANTED);
 
@@ -96,9 +103,14 @@ public class exportFile extends AppCompatActivity {
                                 }
                             }
                             SinhVien sinhVien = new SinhVien(map.get("fullname").toString(),map.get("idUser").toString(),classID,date.size());
-                            dsCT.add(sinhVien);
-                            dsCamThi.add(sinhVien.getName()+"\n"+sinhVien.getId()+"\n"+ sinhVien.getMonHoc()+"\n"+sinhVien.getnApsent());
-                            adapter.notifyDataSetChanged();
+                            if(date.size() > 2) {
+                                dsCT.add(sinhVien);
+                                dsCamThi.add("Tên: " + sinhVien.getName() + "\n" +
+                                        "MSSV: " + sinhVien.getId() + "\n" +
+                                        "Số Ngày Vắng: " + sinhVien.getnApsent() + "\n" +
+                                        "-------------" + "\n");
+                                adapter.notifyDataSetChanged();
+                            }
                         }
 
                         @Override
@@ -164,6 +176,51 @@ public class exportFile extends AppCompatActivity {
                     FileOutputStream fileOutputStream = new FileOutputStream(filePath);
 
                     hssfWorkbook.write(fileOutputStream);
+                    Toast.makeText(exportFile.this, "Export Success", Toast.LENGTH_SHORT).show();
+                    if (fileOutputStream != null) {
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(exportFile.this, "Export Failed", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+        btnPDF.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onClick(View v) {
+                PdfDocument pdfDocument = new PdfDocument();
+                PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(300,600,3).create();
+                PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+
+                Paint paint = new Paint();
+                int x = 10, y = 25;
+                for(String line : dsCamThi){
+                    for(String line1 : line.split("\n")) {
+                        page.getCanvas().drawText(line1 , x, y, paint);
+                        y += paint.descent() - paint.ascent();
+                    }
+                }
+
+
+
+                pdfDocument.finishPage(page);
+
+                String myFilePath = Environment.getExternalStorageDirectory().getPath() + "/Danh Sách Cấm Thi Lớp "+classID+".pdf";
+
+                File myFile = new File(myFilePath);
+
+                try {
+                    if (!myFile.exists()) {
+                        myFile.createNewFile();
+                    }
+
+                    FileOutputStream fileOutputStream = new FileOutputStream(myFile);
+
+                    pdfDocument.writeTo(fileOutputStream);
+
                     Toast.makeText(exportFile.this, "Export Success", Toast.LENGTH_SHORT).show();
                     if (fileOutputStream != null) {
                         fileOutputStream.flush();
