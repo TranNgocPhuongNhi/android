@@ -1,10 +1,5 @@
 package phuongnhi.tnpn.project;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +10,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,7 +52,6 @@ public class Chatting extends AppCompatActivity {
 
         AnhXa();
 
-        adapter = new MessageAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -168,6 +167,7 @@ public class Chatting extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                data.clear();
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     Chat chat = dataSnapshot.getValue(Chat.class);
                     if(chat.getSender().equals(myid) && chat.getReceiver().equals(userid) ||
@@ -175,6 +175,8 @@ public class Chatting extends AppCompatActivity {
                         data.add(chat);
                         textSend.setText("");
                     }
+                    adapter = new MessageAdapter();
+                    recyclerView.setAdapter(adapter);
                 }
             }
 
