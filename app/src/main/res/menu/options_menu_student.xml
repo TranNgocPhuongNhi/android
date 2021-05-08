@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Xuất file Excel"
+    <item android:title="Xuất file cấm thi"
         android:id="@+id/exportFile"/>
     <item android:title="Chỉnh sửa"
         android:id="@+id/editOp"/>

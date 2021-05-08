@@ -62,12 +62,7 @@ public class StudySituation extends AppCompatActivity {
         ImageView btnAdd = (ImageView) findViewById(R.id.imageAdd);
         btnAdd.setVisibility(View.INVISIBLE);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
 
         recyclerView = findViewById(R.id.listClassroom);
         data = new ArrayList<Lop>();

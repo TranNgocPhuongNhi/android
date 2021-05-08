@@ -67,7 +67,7 @@ public class ListStudent extends AppCompatActivity {
         tenMH = findViewById(R.id.tenMonHoc);
         siso = findViewById(R.id.siSo);
 
-        recyclerView = findViewById(R.id.listStudent);
+        recyclerView = findViewById(R.id.listUser);
         adapter = new studentAdapter();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(ListStudent.this));
@@ -131,7 +131,7 @@ public class ListStudent extends AppCompatActivity {
                 myRefAttendance.child("Date: " + getDayNow()).child("CodeNow").removeValue();
                 alertDialog.dismiss();
 
-                String title = "Thông báo vắng học";
+                String title = "Thông báo tình hình học tập";
                 String msg = "Bạn có thông báo mới về lớp học";
                 //send notification
                 FcmNotificationsSender notificationsSender = new FcmNotificationsSender(

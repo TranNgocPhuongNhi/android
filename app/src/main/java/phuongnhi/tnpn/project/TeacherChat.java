@@ -39,8 +39,10 @@ public class TeacherChat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_chat);
+        //back
+        findViewById(R.id.imageView6).setOnClickListener(v -> finish());
 
-        listStudent = (RecyclerView) findViewById(R.id.listStudent);
+        listStudent = (RecyclerView) findViewById(R.id.listUser);
         data = new ArrayList<>();
         adapter = new TeacherAdapter();
         listStudent.setAdapter(adapter);
