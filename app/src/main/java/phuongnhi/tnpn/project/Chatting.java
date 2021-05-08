@@ -78,13 +78,7 @@ public class Chatting extends AppCompatActivity {
             }
         });
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent1 = new Intent(Chatting.this, StudentChat.class);
-                startActivity(intent1);
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override

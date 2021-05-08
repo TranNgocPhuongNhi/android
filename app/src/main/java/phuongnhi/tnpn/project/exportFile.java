@@ -55,7 +55,7 @@ public class exportFile extends AppCompatActivity {
 
     List<String> date= new ArrayList<String>();
     String classID;
-    Integer temp;
+    String maxApsent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +68,7 @@ public class exportFile extends AppCompatActivity {
 
         Intent intent = getIntent();
         classID = intent.getStringExtra("classID");
+        maxApsent = intent.getStringExtra("maxAbsent");
 //        temp = intent.getIntExtra("DuocPhepVang",temp);
 
         filePath = new File(Environment.getExternalStorageDirectory() + "/Danh Sách Cấm Thi Lớp "+classID+".xls");
@@ -79,8 +80,8 @@ public class exportFile extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         mData = FirebaseDatabase.getInstance().getReference("Attendance").child(classID);
-        myRef = FirebaseDatabase.getInstance().getReference("Class").child(classID).child("list_student");
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef = FirebaseDatabase.getInstance().getReference("Class").child(classID);
+        myRef.child("list_student").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -103,7 +104,7 @@ public class exportFile extends AppCompatActivity {
                                 }
                             }
                             SinhVien sinhVien = new SinhVien(map.get("fullname").toString(),map.get("idUser").toString(),classID,date.size());
-                            if(date.size() > 2) {
+                            if(date.size() > Integer.parseInt(maxApsent) * 0.2) {
                                 dsCT.add(sinhVien);
                                 dsCamThi.add("Tên: " + sinhVien.getName() + "\n" +
                                         "MSSV: " + sinhVien.getId() + "\n" +

@@ -142,6 +142,7 @@ public class Classroom extends AppCompatActivity {
                             switch(item.getItemId()) {
                                 case R.id.exportFile:
                                     Intent intent = new Intent(Classroom.this, exportFile.class);
+                                    intent.putExtra("maxAbsent", ""+lop.getCount());
                                     intent.putExtra("classID",lop.getClassID());
 
                                     startActivity(intent);

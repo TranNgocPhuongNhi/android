@@ -5,20 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Map;
 
 public class RollCall extends AppCompatActivity {
@@ -79,7 +72,7 @@ public class RollCall extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> {
 
-            String title = "Thông báo vắng học";
+            String title = "Thông báo tình hình học tập";
             String msg = "Bạn có thông báo mới về lớp học";
             //send notification
             FcmNotificationsSender notificationsSender = new FcmNotificationsSender(
@@ -96,7 +89,7 @@ public class RollCall extends AppCompatActivity {
 
 
 
-        recyclerView = (RecyclerView) findViewById(R.id.listStudent);
+        recyclerView = (RecyclerView) findViewById(R.id.listUser);
         adapter = new studentAdapter();
         data = new ArrayList<ListStudent.MyStudent>();
         status = new ArrayList<Boolean>();
